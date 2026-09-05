@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Vanessa Pacheco Studio · Maquillaje &amp; Cuidado Capilar en Tegucigalpa</title>
+<meta name="description" content="Estudio de maquillaje profesional y cuidado capilar en Tegucigalpa, Honduras. Vanessa Pacheco Handal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ CONFIG-DRIVEN THEME (see CONFIG object in JS) ============ */
+  :root{
+    --cream:      #F7F1E9;
+    --cream-2:    #F1E8DC;
+    --paper:      #FFFDFA;
+    --ink:        #241C16;
+    --ink-soft:   #5B4E42;
+    --ink-faint:  #8A7A6A;
+    --gold:       #AD7C51;
+    --gold-deep:  #8C5F3B;
+    --blush:      #E9D6C4;
+    --line:       rgba(36,28,22,0.10);
+    --shadow-sm:  0 2px 10px rgba(60,40,20,0.06);
+    --shadow-md:  0 16px 40px -12px rgba(60,40,20,0.20);
+    --shadow-lg:  0 30px 70px -20px rgba(60,40,20,0.35);
+    --radius:     22px;
+    --ease:       cubic-bezier(.22,.61,.36,1);
+    --maxw:       1180px;
+  }
+
+  @media (prefers-color-scheme: dark){ /* keep light luxury palette regardless of OS theme */ }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Manrope', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+    margin:0;
+    color:var(--ink);
+  }
+  p{ margin:0; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  ::selection{ background:var(--blush); color:var(--ink); }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 clamp(20px,5vw,64px); }
+
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+    transition-delay:var(--delay,0s);
+  }
+  [data-reveal].is-visible{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    [data-reveal]{ opacity:1 !important; transform:none !important; transition:none !important; }
+    *{ scroll-behavior:auto !important; }
+  }
+
+  /* ============ NAV ============ */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px);
+    transition:background .5s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease);
+  }
+  .nav.scrolled{
+    background:rgba(247,241,233,0.82);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    padding-top:14px; padding-bottom:14px;
+    box-shadow:0 1px 0 var(--line);
+  }
+  .nav-brand{
+    font-family:'Fraunces', serif;
+    font-size:19px;
+    letter-spacing:0.01em;
+  }
+  .nav-brand em{ font-style:italic; color:var(--gold-deep); }
+  .nav-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:var(--paper);
+    padding:11px 20px; border-radius:100px;
+    font-size:13.5px; font-weight:600;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .3s;
+    box-shadow:var(--shadow-sm);
+  }
+  .nav-cta:hover{ transform:translateY(-2px) scale(1.02); box-shadow:var(--shadow-md); background:var(--gold-deep); }
+  .nav-cta svg{ width:16px; height:16px; }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:110px;
+    overflow:hidden;
+  }
+  .hero-field{
+    position:absolute; inset:0; z-index:0; pointer-events:none;
+  }
+  .blob{
+    position:absolute; border-radius:50%;
+    filter:blur(60px);
+    opacity:.55;
+    will-change:transform;
+  }
+  .blob-a{ width:520px; height:520px; top:-160px; right:-120px; background:radial-gradient(circle at 30% 30%, var(--blush), transparent 70%); }
+  .blob-b{ width:420px; height:420px; bottom:-140px; left:-100px; background:radial-gradient(circle at 60% 40%, var(--gold), transparent 70%); opacity:.28; }
+  .blob-c{ width:280px; height:280px; top:38%; left:58%; background:radial-gradient(circle, var(--cream-2), transparent 70%); opacity:.5; }
+
+  .hero-grain{
+    position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+    background-image:radial-gradient(circle at 1px 1px, rgba(36,28,22,0.05) 1px, transparent 0);
+    background-size:3px 3px;
+  }
+
+  .hero-inner{ position:relative; z-index:2; }
+  .eyebrow-row{
+    display:flex; align-items:center; gap:10px;
+    color:var(--ink-soft); font-size:14px; margin-bottom:22px;
+  }
+  .eyebrow-dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); flex:none; }
+
+  .hero h1{
+    font-size:clamp(44px, 8vw, 96px);
+    line-height:0.98;
+    max-width:14ch;
+  }
+  .hero h1 .accent-word{ font-style:italic; color:var(--gold-deep); }
+
+  .hero-desc{
+    margin-top:26px;
+    max-width:46ch;
+    font-size:clamp(16px,2.1vw,19px);
+    color:var(--ink-soft);
+  }
+
+  .hero-actions{
+    margin-top:38px;
+    display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:16px 30px; border-radius:100px;
+    font-size:15px; font-weight:600;
+    transition:transform .4s var(--ease), box-shadow .4s var(--ease), background .3s var(--ease), color .3s var(--ease);
+  }
+  .btn svg{ width:18px; height:18px; flex:none; }
+  .btn-primary{
+    background:var(--ink); color:var(--paper);
+    box-shadow:var(--shadow-md);
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:var(--shadow-lg); background:var(--gold-deep); }
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--ink);
+    background:rgba(255,253,250,0.5);
+  }
+  .btn-ghost:hover{ border-color:var(--gold); background:var(--paper); transform:translateY(-3px); }
+
+  .hero-meta{
+    margin-top:64px;
+    display:flex; flex-wrap:wrap; gap:34px;
+    padding-top:26px; border-top:1px solid var(--line);
+    max-width:640px;
+  }
+  .hero-meta .item{ display:flex; flex-direction:column; gap:4px; }
+  .hero-meta .label{ font-size:12.5px; color:var(--ink-faint); }
+  .hero-meta .value{ font-family:'Fraunces', serif; font-size:17px; }
+
+  .scroll-cue{
+    position:absolute; bottom:34px; left:clamp(20px,5vw,64px);
+    display:flex; align-items:center; gap:10px;
+    font-size:12.5px; color:var(--ink-faint);
+    z-index:2;
+  }
+  .scroll-cue .line{ width:32px; height:1px; background:var(--ink-faint); position:relative; overflow:hidden; }
+  .scroll-cue .line::after{
+    content:''; position:absolute; left:-100%; top:0; width:100%; height:100%; background:var(--gold-deep);
+    animation:cue 2.2s ease-in-out infinite;
+  }
+  @keyframes cue{ 0%{left:-100%;} 50%{left:0;} 100%{left:100%;} }
+
+  /* ============ SECTION SCAFFOLD ============ */
+  section{ position:relative; padding:120px 0; }
+  .section-head{
+    display:flex; flex-direction:column; gap:16px;
+    max-width:640px;
+    margin-bottom:64px;
+  }
+  .kicker{
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:13.5px; color:var(--gold-deep); font-weight:600;
+  }
+  .kicker::before{ content:''; width:18px; height:1px; background:var(--gold-deep); }
+  .section-head h2{ font-size:clamp(32px,4.4vw,50px); line-height:1.05; }
+  .section-head p{ color:var(--ink-soft); font-size:17px; max-width:52ch; }
+
+  /* ============ ABOUT / ARTIST ============ */
+  .about{ background:var(--paper); border-radius:40px; }
+  .about-grid{
+    display:grid; grid-template-columns:0.85fr 1.15fr; gap:64px; align-items:center;
+  }
+  .about-card{
+    perspective:1400px;
+  }
+  .about-card-inner{
+    position:relative;
+    border-radius:28px;
+    aspect-ratio:4/5;
+    background:linear-gradient(155deg, var(--blush) 0%, var(--cream-2) 55%, var(--gold) 140%);
+    box-shadow:var(--shadow-lg);
+    transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+    transition:transform .5s var(--ease), box-shadow .5s var(--ease);
+    will-change:transform;
+    overflow:hidden;
+    display:flex; align-items:flex-end;
+  }
+  .about-card-inner::before{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 45%),
+      repeating-linear-gradient(120deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 26px);
+  }
+  .about-card-tag{
+    position:relative; z-index:1;
+    margin:26px; padding:16px 20px;
+    background:rgba(255,253,250,0.75);
+    backdrop-filter:blur(8px);
+    border-radius:16px;
+    font-family:'Fraunces', serif; font-size:15px;
+    box-shadow:var(--shadow-sm);
+  }
+  .about-copy p + p{ margin-top:18px; }
+  .about-copy .lede{ font-family:'Fraunces', serif; font-size:23px; line-height:1.4; color:var(--ink); }
+  .about-copy .body-p{ color:var(--ink-soft); font-size:16px; }
+
+  .cert-list{ margin-top:32px; display:flex; flex-direction:column; gap:14px; }
+  .cert-item{
+    display:flex; gap:14px; align-items:flex-start;
+    padding:16px 18px; border:1px solid var(--line); border-radius:16px;
+    transition:transform .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+  }
+  .cert-item:hover{ transform:translateX(6px); border-color:var(--gold); box-shadow:var(--shadow-sm); }
+  .cert-icon{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    background:var(--cream-2); display:flex; align-items:center; justify-content:center;
+    color:var(--gold-deep);
+  }
+  .cert-icon svg{ width:18px; height:18px; }
+  .cert-text b{ font-family:'Fraunces', serif; font-weight:500; display:block; margin-bottom:2px; }
+  .cert-text span{ color:var(--ink-soft); font-size:14.5px; }
+
+  /* ============ SERVICES — apple-style 3D cards ============ */
+  .services-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:26px;
+  }
+  .service-card{
+    perspective:1200px;
+  }
+  .service-card-inner{
+    position:relative;
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:34px 28px 30px;
+    height:100%;
+    box-shadow:var(--shadow-sm);
+    border:1px solid var(--line);
+    transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease), border-color .45s var(--ease);
+    will-change:transform;
+    display:flex; flex-direction:column; gap:18px;
+    overflow:hidden;
+  }
+  .service-card-inner::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(255,255,255,0.5), transparent 55%);
+    opacity:0; transition:opacity .4s;
+    pointer-events:none;
+  }
+  .service-card.is-hot .service-card-inner{
+    box-shadow:var(--shadow-lg);
+    border-color:var(--gold);
+  }
+  .service-card.is-hot .service-card-inner::after{ opacity:1; }
+
+  .service-icon{
+    width:54px; height:54px; border-radius:16px;
+    background:linear-gradient(155deg, var(--blush), var(--cream-2));
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-deep);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.6), var(--shadow-sm);
+  }
+  .service-icon svg{ width:26px; height:26px; }
+  .service-card h3{ font-size:21px; line-height:1.25; }
+  .service-card p{ color:var(--ink-soft); font-size:15px; }
+  .service-tag{
+    margin-top:auto; align-self:flex-start;
+    font-size:12.5px; color:var(--ink-faint);
+    padding-top:14px; border-top:1px solid var(--line); width:100%;
+  }
+
+  /* ============ GALLERY — parallax masonry ============ */
+  .gallery{ background:var(--ink); border-radius:40px; color:var(--paper); }
+  .gallery .section-head h2, .gallery .kicker{ color:var(--paper); }
+  .gallery .kicker::before{ background:var(--gold); }
+  .gallery .section-head p{ color:rgba(255,253,250,0.65); }
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+  }
+  .gallery-tile{
+    position:relative;
+    border-radius:20px;
+    overflow:hidden;
+    aspect-ratio:3/4;
+    background:linear-gradient(160deg, #3a2e24, #241c16);
+    box-shadow:var(--shadow-md);
+    will-change:transform;
+  }
+  .gallery-tile:nth-child(2){ margin-top:42px; }
+  .gallery-tile:nth-child(4){ margin-top:22px; }
+  .gallery-tile::before{
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 30% 20%, rgba(173,124,81,0.35), transparent 60%);
+  }
+  .gallery-tile .ph{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px;
+    color:rgba(255,253,250,0.55); font-size:13px; text-align:center; padding:20px;
+  }
+  .gallery-tile .ph svg{ width:26px; height:26px; opacity:.7; }
+
+  /* ============ CONTACT ============ */
+  .contact-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:start;
+  }
+  .contact-card{
+    background:var(--paper); border-radius:28px; padding:44px;
+    box-shadow:var(--shadow-md); border:1px solid var(--line);
+  }
+  .contact-row{
+    display:flex; align-items:center; gap:16px;
+    padding:18px 0; border-bottom:1px solid var(--line);
+  }
+  .contact-row:last-child{ border-bottom:none; }
+  .contact-row .ic{
+    width:42px; height:42px; border-radius:12px; flex:none;
+    background:var(--cream-2); display:flex; align-items:center; justify-content:center; color:var(--gold-deep);
+  }
+  .contact-row .ic svg{ width:19px; height:19px; }
+  .contact-row .txt b{ font-family:'Fraunces', serif; font-weight:500; display:block; font-size:16.5px; }
+  .contact-row .txt span{ color:var(--ink-soft); font-size:14px; }
+
+  .contact-cta-big{
+    margin-top:28px;
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    width:100%; padding:20px; border-radius:100px;
+    background:linear-gradient(120deg, #3d8a5c, #2e7048);
+    color:#fff; font-size:16px; font-weight:700;
+    box-shadow:var(--shadow-md);
+    transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .contact-cta-big:hover{ transform:translateY(-3px) scale(1.01); box-shadow:var(--shadow-lg); }
+  .contact-cta-big svg{ width:22px; height:22px; }
+
+  .social-row{ display:flex; gap:12px; margin-top:16px; }
+  .social-pill{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:11px 18px; border-radius:100px; border:1px solid var(--line);
+    font-size:13.5px; font-weight:600;
+    transition:transform .35s var(--ease), border-color .35s, background .3s;
+  }
+  .social-pill:hover{ transform:translateY(-2px); border-color:var(--gold); background:var(--paper); }
+  .social-pill svg{ width:16px; height:16px; }
+
+  .quote-block{
+    padding:40px 8px 0;
+  }
+  .quote-block p{
+    font-family:'Fraunces', serif; font-style:italic; font-size:clamp(22px,2.6vw,30px);
+    line-height:1.45; color:var(--ink);
+  }
+  .quote-block .who{ margin-top:20px; font-family:'Manrope',sans-serif; font-style:normal; font-size:14px; color:var(--ink-faint); }
+
+  /* ============ FOOTER ============ */
+  footer{
+    padding:56px 0 100px;
+    display:flex; flex-wrap:wrap; gap:20px; align-items:center; justify-content:space-between;
+    border-top:1px solid var(--line);
+    color:var(--ink-faint); font-size:13.5px;
+  }
+  footer .fbrand{ font-family:'Fraunces', serif; color:var(--ink); font-size:16px; }
+
+  /* ============ STICKY MOBILE CTA ============ */
+  .sticky-cta{
+    position:fixed; left:16px; right:16px; bottom:16px; z-index:200;
+    display:none;
+    align-items:center; justify-content:center; gap:10px;
+    padding:16px; border-radius:100px;
+    background:#2e7048; color:#fff; font-weight:700; font-size:15px;
+    box-shadow:0 12px 30px -8px rgba(30,60,40,0.55);
+  }
+  .sticky-cta svg{ width:19px; height:19px; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 980px){
+    .about-grid{ grid-template-columns:1fr; gap:44px; }
+    .services-grid{ grid-template-columns:1fr 1fr; }
+    .gallery-grid{ grid-template-columns:1fr 1fr; }
+    .contact-grid{ grid-template-columns:1fr; gap:40px; }
+    .hero-meta{ gap:24px; }
+  }
+  @media (max-width: 620px){
+    .nav-cta span{ display:none; }
+    .nav-cta{ padding:12px; }
+    section{ padding:80px 0; }
+    .services-grid{ grid-template-columns:1fr; }
+    .gallery-grid{ grid-template-columns:1fr 1fr; }
+    .gallery-tile:nth-child(2), .gallery-tile:nth-child(4){ margin-top:0; }
+    .about-grid, .contact-grid{ gap:32px; }
+    .contact-card{ padding:28px; }
+    .sticky-cta{ display:flex; }
+    footer{ padding-bottom:120px; }
+    .hero{ padding-top:120px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav" id="nav">
+    <a href="#top" class="nav-brand"><span id="nav-name">Vanessa Pacheco</span> <em>Studio</em></a>
+    <a href="#" class="nav-cta" id="nav-whatsapp" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 18.14h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.71 8.22-8.25 8.22Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.4-.12-.56.13-.17.25-.65.81-.79.97-.15.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.24-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.02 2.57.12.17 1.75 2.67 4.24 3.75.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.28Z"/></svg>
+      <span>WhatsApp</span>
+    </a>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="top">
+    <div class="hero-field">
+      <div class="blob blob-a" data-parallax="0.18"></div>
+      <div class="blob blob-b" data-parallax="0.28"></div>
+      <div class="blob blob-c" data-parallax="0.4"></div>
+    </div>
+    <div class="hero-grain"></div>
+
+    <div class="wrap hero-inner">
+      <div class="eyebrow-row" data-reveal>
+        <span class="eyebrow-dot"></span>
+        <span>Tegucigalpa, Honduras</span>
+      </div>
+
+      <h1 data-reveal>Belleza que se <span class="accent-word">nota</span>, técnica que no falla.</h1>
+
+      <p class="hero-desc" data-reveal style="--delay:.1s">
+        <span id="hero-name">Vanessa Pacheco Studio</span> es el espacio de <span id="hero-artist">Vanessa Pacheco Handal</span> para maquillaje profesional y cuidado capilar en Tegucigalpa — diagnóstico, tratamiento y el resultado final, en una misma cita.
+      </p>
+
+      <div class="hero-actions" data-reveal style="--delay:.2s">
+        <a href="#" class="btn btn-primary" id="hero-whatsapp" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 18.14h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.71 8.22-8.25 8.22Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.4-.12-.56.13-.17.25-.65.81-.79.97-.15.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.24-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.02 2.57.12.17 1.75 2.67 4.24 3.75.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.28Z"/></svg>
+          Agenda por WhatsApp
+        </a>
+        <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+      </div>
+
+      <div class="hero-meta" data-reveal style="--delay:.3s">
+        <div class="item">
+          <span class="label">Especialidad</span>
+          <span class="value">Maquillaje &amp; cabello</span>
+        </div>
+        <div class="item">
+          <span class="label">Certificaciones</span>
+          <span class="value">Maquillista · Nanoterapias</span>
+        </div>
+        <div class="item">
+          <span class="label">Contacto directo</span>
+          <span class="value" id="hero-phone">+504 9961-3011</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-cue"><span class="line"></span><span>Desliza</span></div>
+  </header>
+
+  <!-- ============ ABOUT / ARTIST ============ -->
+  <section id="artista">
+    <div class="wrap about">
+      <div style="padding:clamp(36px,6vw,80px);">
+        <div class="about-grid">
+          <div class="about-card tilt-el" data-tilt data-reveal>
+            <div class="about-card-inner">
+              <div class="about-card-tag">Vanessa Pacheco Handal</div>
+            </div>
+          </div>
+
+          <div class="about-copy">
+            <div class="kicker" data-reveal>La artista</div>
+            <p class="lede" data-reveal style="--delay:.05s">Formación certificada, aplicada con calma y precisión — no solo maquillaje, sino un diagnóstico real de tu cabello y tu piel antes de cualquier tratamiento.</p>
+            <p class="body-p" data-reveal style="--delay:.1s">Vanessa Pacheco Handal dirige el estudio con certificación profesional en maquillaje y una especialización en nanoterapias capilares, combinando ambas disciplinas para que el resultado dure más allá del día de la cita.</p>
+
+            <div class="cert-list" data-reveal style="--delay:.15s">
+              <div class="cert-item">
+                <div class="cert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.2 4.7L19 9l-3.5 3.4.8 4.9L12 15l-4.3 2.3.8-4.9L5 9l4.8-1.3L12 3Z" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="cert-text"><b>Maquillista profesional certificada</b><span>Técnica de maquillaje formal, aplicada a piel y ocasión.</span></div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg>
+                </div>
+                <div class="cert-text"><b>Certificada en nanoterapias</b><span>Tratamientos capilares de precisión con equipo especializado.</span></div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>
+                </div>
+                <div class="cert-text"><b>Diagnóstico capilar personalizado</b><span>Cada tratamiento parte de un análisis real de tu cabello.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="servicios">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="kicker" data-reveal>Servicios</div>
+        <h2 data-reveal style="--delay:.05s">Lo que se trabaja en cada cita</h2>
+        <p data-reveal style="--delay:.1s">Maquillaje y cabello, tratados como una sola disciplina — desde el diagnóstico hasta el acabado final.</p>
+      </div>
+
+      <div class="services-grid" id="services-grid"><!-- injected by JS --></div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY (placeholder, swap CONFIG.images.gallery later) ============ -->
+  <section id="galeria">
+    <div class="wrap gallery">
+      <div style="padding:clamp(36px,6vw,80px);">
+        <div class="section-head">
+          <div class="kicker">Galería</div>
+          <h2>Trabajos recientes</h2>
+          <p>Espacio reservado — se actualizará con fotografía real del estudio y trabajos de Vanessa.</p>
+        </div>
+        <div class="gallery-grid" id="gallery-grid"><!-- injected by JS --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contacto">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div>
+          <div class="kicker" data-reveal>Contacto</div>
+          <h2 data-reveal style="--delay:.05s" style="font-size:clamp(30px,3.6vw,44px);">Agenda tu cita</h2>
+          <div class="quote-block" data-reveal style="--delay:.1s">
+            <p>&ldquo;Cada tratamiento empieza con un diagnóstico real — no con una lista de servicios genéricos.&rdquo;</p>
+            <div class="who">Vanessa Pacheco Handal</div>
+          </div>
+        </div>
+
+        <div class="contact-card" data-reveal style="--delay:.1s">
+          <div class="contact-row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg></div>
+            <div class="txt"><b>Tegucigalpa, Honduras</b><span>Dirección exacta próximamente</span></div>
+          </div>
+          <div class="contact-row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1.1-.3 1.2.4 2.5.6 3.8.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C11.4 21 3 12.6 3 2.7c0-.6.4-1 1-1H7.7c.6 0 1 .4 1 1 0 1.3.2 2.6.6 3.8.1.4 0 .8-.3 1.1L6.6 10.8Z"/></svg></div>
+            <div class="txt"><b id="contact-phone">+504 9961-3011</b><span>Escríbenos directo por WhatsApp</span></div>
+          </div>
+          <div class="contact-row">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+            <div class="txt"><b>Disponibilidad por cita</b><span>Escríbenos para conocer horarios abiertos</span></div>
+          </div>
+
+          <a href="#" class="contact-cta-big" id="contact-whatsapp" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 18.14h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.71 8.22-8.25 8.22Z"/></svg>
+            Escribir por WhatsApp
+          </a>
+
+          <div class="social-row">
+            <a href="#" class="social-pill" id="social-instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+              Instagram
+            </a>
+            <a href="#" class="social-pill" id="social-facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 8.5h2V5h-2c-2.2 0-4 1.8-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.5.5-1 .5-1Z" stroke-linejoin="round"/></svg>
+              Facebook
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <span class="fbrand" id="footer-name">Vanessa Pacheco Studio</span>
+    <span>Maquillaje &amp; cuidado capilar · Tegucigalpa, Honduras</span>
+  </footer>
+
+  <a href="#" class="sticky-cta" id="sticky-whatsapp" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 18.14h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.71 8.22-8.25 8.22Z"/></svg>
+    Agendar por WhatsApp
+  </a>
+
+<script>
+/* ============================================================
+   CONFIG — the ONLY block that changes per prospect (see
+   Santi's dental/coffee/salon templates for the same pattern).
+   ============================================================ */
+const CONFIG = {
+  business: {
+    name: "Vanessa Pacheco Studio",
+    artist: "Vanessa Pacheco Handal",
+    city: "Tegucigalpa, Honduras",
+  },
+  contact: {
+    whatsapp: "50499613011", // digits only
+    whatsappMessage: "Hola, me gustaría agendar una cita en Vanessa Pacheco Studio",
+    phoneDisplay: "+504 9961-3011",
+  },
+  socials: {
+    instagram: "https://www.instagram.com/vanessapachecostudio/?hl=en",
+    facebook: "https://www.facebook.com/VanessaPachecoMakeup/",
+  },
+  services: [
+    {
+      name: "Maquillaje profesional",
+      desc: "Maquillaje para el día a día y ocasiones especiales, adaptado a tu piel y al evento.",
+      tag: "Piel · Día y noche",
+      hot: true,
+      icon: `<path d="M12 3l2.2 4.7L19 9l-3.5 3.4.8 4.9L12 15l-4.3 2.3.8-4.9L5 9l4.8-1.3L12 3Z" stroke-linejoin="round"/>`
+    },
+    {
+      name: "Maquillaje para eventos",
+      desc: "Looks para bodas, sesiones y celebraciones — planificado con prueba previa si el evento lo requiere.",
+      tag: "Eventos especiales",
+      icon: `<path d="M4 20h16"/><path d="M6 20V10l6-6 6 6v10"/><path d="M10 20v-6h4v6"/>`
+    },
+    {
+      name: "Nanoterapia capilar",
+      desc: "Tratamiento capilar de precisión con equipo especializado, según el diagnóstico de tu cabello.",
+      tag: "Certificación en nanoterapias",
+      hot: true,
+      icon: `<path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/>`
+    },
+    {
+      name: "Diagnóstico capilar",
+      desc: "Análisis del cuero cabelludo y la fibra capilar antes de recomendar cualquier tratamiento.",
+      tag: "Primer paso de todo tratamiento",
+      icon: `<path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/>`
+    },
+    {
+      name: "Reconstrucción capilar",
+      desc: "Tratamientos de reconstrucción para devolver fuerza y estructura al cabello dañado.",
+      tag: "Cabello dañado o tratado",
+      icon: `<path d="M4 12c2-4 5-6 8-6s6 2 8 6c-2 4-5 6-8 6s-6-2-8-6Z"/><circle cx="12" cy="12" r="2"/>`
+    },
+    {
+      name: "Asesoría de imagen",
+      desc: "Recomendaciones de maquillaje y cuidado capilar a tu medida, pensadas para el día a día.",
+      tag: "A tu medida",
+      icon: `<path d="M12 4v16M4 12h16" stroke-linecap="round"/>`
+    }
+  ],
+  gallery: [] // add {image:"url", caption:"..."} objects here once photos are ready
+};
+
+/* ============================================================
+   RENDER — reads CONFIG into the DOM. Never hardcode business
+   data directly into markup above; everything flows from here.
+   ============================================================ */
+(function render(){
+  const waLink = (extra) => `https://wa.me/${CONFIG.contact.whatsapp}?text=${encodeURIComponent(CONFIG.contact.whatsappMessage)}`;
+
+  document.title = `${CONFIG.business.name} · Maquillaje & Cuidado Capilar en Tegucigalpa`;
+  ["nav-name"].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = CONFIG.business.name.replace(" Studio",""); });
+  document.getElementById("hero-name").textContent = CONFIG.business.name;
+  document.getElementById("hero-artist").textContent = CONFIG.business.artist;
+  document.getElementById("hero-phone").textContent = CONFIG.contact.phoneDisplay;
+  document.getElementById("contact-phone").textContent = CONFIG.contact.phoneDisplay;
+  document.getElementById("footer-name").textContent = CONFIG.business.name;
+
+  ["nav-whatsapp","hero-whatsapp","contact-whatsapp","sticky-whatsapp"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = waLink();
+  });
+  document.getElementById("social-instagram").href = CONFIG.socials.instagram;
+  document.getElementById("social-facebook").href = CONFIG.socials.facebook;
+
+  // Services
+  const grid = document.getElementById("services-grid");
+  grid.innerHTML = CONFIG.services.map((s,i)=>`
+    <div class="service-card tilt-el ${s.hot ? 'is-hot':''}" data-tilt data-reveal style="--delay:${(i%3)*0.08}s">
+      <div class="service-card-inner">
+        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${s.icon}</svg></div>
+        <h3>${s.name}</h3>
+        <p>${s.desc}</p>
+        <div class="service-tag">${s.tag}</div>
+      </div>
+    </div>
+  `).join("");
+
+  // Gallery — placeholders unless CONFIG.gallery has entries
+  const gg = document.getElementById("gallery-grid");
+  const placeholders = 4;
+  const items = CONFIG.gallery.length ? CONFIG.gallery : Array.from({length:placeholders}).map(()=>null);
+  gg.innerHTML = items.map((item,i)=>{
+    if(item){
+      return `<div class="gallery-tile" data-parallax-tile style="background-image:url('${item.image}');background-size:cover;background-position:center;"></div>`;
+    }
+    return `<div class="gallery-tile" data-parallax-tile>
+      <div class="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5.5-5.5L9 18"/></svg>
+        <span>Foto próximamente</span>
+      </div>
+    </div>`;
+  }).join("");
+})();
+
+/* ============================================================
+   NAV: background on scroll
+   ============================================================ */
+const nav = document.getElementById('nav');
+function onNavScroll(){ nav.classList.toggle('scrolled', window.scrollY > 40); }
+window.addEventListener('scroll', onNavScroll, { passive:true });
+onNavScroll();
+
+/* ============================================================
+   REVEAL ON SCROLL
+   ============================================================ */
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduced){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15, rootMargin:"0px 0px -40px 0px" });
+  document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+} else {
+  document.querySelectorAll('[data-reveal]').forEach(el=>el.classList.add('is-visible'));
+}
+
+/* ============================================================
+   APPLE-STYLE 3D TILT — pointer-driven on desktop/hover devices
+   ============================================================ */
+const canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+if(canHover && !reduced){
+  document.querySelectorAll('[data-tilt]').forEach(card=>{
+    const inner = card.querySelector('.about-card-inner, .service-card-inner') || card;
+    const MAX = 8;
+    card.addEventListener('mousemove', (e)=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;   // 0..1
+      const py = (e.clientY - r.top) / r.height;   // 0..1
+      const ry = (px - 0.5) * MAX * 2;
+      const rx = (0.5 - py) * MAX * 2;
+      inner.style.setProperty('--rx', rx.toFixed(2)+'deg');
+      inner.style.setProperty('--ry', ry.toFixed(2)+'deg');
+    });
+    card.addEventListener('mouseleave', ()=>{
+      inner.style.setProperty('--rx','0deg');
+      inner.style.setProperty('--ry','0deg');
+    });
+  });
+}
+
+/* ============================================================
+   SCROLL-LINKED PARALLAX + TILT — tuned for mobile/touch, where
+   there's no hover: cards get a gentle 3D settle as they enter
+   the viewport, and hero blobs / gallery tiles drift at
+   different speeds while scrolling.
+   ============================================================ */
+if(!reduced){
+  let ticking = false;
+  const blobs = document.querySelectorAll('[data-parallax]');
+  const tiles = document.querySelectorAll('[data-parallax-tile]');
+  const tiltEls = !canHover ? document.querySelectorAll('[data-tilt]') : [];
+  const vh = () => window.innerHeight;
+
+  function update(){
+    const y = window.scrollY;
+
+    // hero blobs drift vertically at different rates
+    blobs.forEach(b=>{
+      const speed = parseFloat(b.dataset.parallax) || 0.2;
+      b.style.transform = `translate3d(0, ${y * speed * -0.35}px, 0)`;
+    });
+
+    // gallery tiles: subtle alternating vertical drift as user scrolls
+    tiles.forEach((t,i)=>{
+      const rect = t.getBoundingClientRect();
+      const center = rect.top + rect.height/2 - vh()/2;
+      const dir = i % 2 === 0 ? 1 : -1;
+      const offset = Math.max(Math.min(center * -0.06 * dir, 26), -26);
+      t.style.transform = `translate3d(0, ${offset}px, 0)`;
+    });
+
+    // touch devices: settle card tilt based on how centered the card is
+    if(!canHover){
+      tiltEls.forEach(card=>{
+        const inner = card.querySelector('.about-card-inner, .service-card-inner') || card;
+        const rect = card.getBoundingClientRect();
+        const center = rect.top + rect.height/2 - vh()/2;
+        const progress = Math.max(Math.min(center / (vh()/2), 1), -1); // -1..1
+        const rx = progress * -6;
+        const ry = progress * 4;
+        inner.style.setProperty('--rx', rx.toFixed(2)+'deg');
+        inner.style.setProperty('--ry', ry.toFixed(2)+'deg');
+      });
+    }
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){ requestAnimationFrame(update); ticking = true; }
+  }, { passive:true });
+  update();
+}
+</script>
+</body>
+</html>
