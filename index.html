@@ -750,7 +750,7 @@
 
   /* ============ FOOTER ============ */
   footer{
-    padding:56px 0 100px;
+    padding:56px 0 calc(80px + env(safe-area-inset-bottom, 20px));
     border-top:1px solid var(--line);
     color:var(--ink-faint); font-size:13.5px;
   }
@@ -761,6 +761,7 @@
   footer .fbrand{ font-family:'Fraunces', serif; color:var(--ink); font-size:16px; }
   .foot-credit{
     margin-top:20px;
+    padding-bottom:12px;
     font-size:11px;
     color:var(--ink-faint);
     text-align:center;
