@@ -459,6 +459,51 @@
     padding-top:14px; border-top:1px solid var(--line); width:100%;
   }
 
+  /* Treatment benefits — from studio catalog */
+  .service-benefits{
+    margin-top:clamp(48px,6vw,72px);
+    padding:clamp(32px,4vw,48px);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  }
+  .service-benefits-head{
+    text-align:center; max-width:640px; margin:0 auto clamp(28px,4vw,40px);
+  }
+  .service-benefits-head h3{
+    font-family:'Fraunces', serif;
+    font-size:clamp(26px,3vw,34px);
+    font-weight:500;
+    margin-bottom:10px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--line);
+    display:inline-block;
+  }
+  .service-benefits-head p{ color:var(--ink-soft); font-size:15px; }
+  .benefits-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px 32px;
+    list-style:none;
+    margin:0; padding:0;
+  }
+  .benefits-list li{
+    display:flex; gap:14px; align-items:flex-start;
+    font-size:14.5px; line-height:1.55; color:var(--ink-soft);
+  }
+  .benefits-list li::before{
+    content:'';
+    flex:none;
+    width:8px; height:8px; margin-top:7px;
+    border-radius:50%;
+    background:var(--ink);
+    box-shadow:0 0 0 3px rgba(255,255,255,0.08);
+  }
+  .benefits-list strong{ color:var(--ink); font-weight:500; }
+  @media (max-width: 820px){
+    .benefits-list{ grid-template-columns:1fr; gap:14px; }
+  }
+
   /* ============ GALLERY — parallax masonry ============ */
   .gallery{ background:#000000; border-radius:40px; color:var(--ink); overflow:hidden; border:1px solid var(--line); }
   .gallery .wrap{ overflow:hidden; }
@@ -887,6 +932,7 @@
       </div>
 
       <div class="services-grid" id="services-grid"><!-- injected by JS --></div>
+      <div class="service-benefits" id="service-benefits" data-reveal hidden><!-- injected by JS --></div>
       <div class="pricing-note" data-reveal id="pricing-note"></div>
     </div>
   </section>
@@ -1052,31 +1098,47 @@ const CONFIG = {
       icon: `<path d="M4 20h16"/><path d="M6 20V10l6-6 6 6v10"/><path d="M10 20v-6h4v6"/>`
     },
     {
-      name: "Nanoterapia capilar",
-      desc: "Tratamiento capilar de precisión con equipo especializado, según el diagnóstico de tu cabello.",
-      tag: "Certificación en nanoterapias",
+      name: "Fortalecimiento capilar",
+      desc: "Sistema nutritivo y revitalizante con máxima hidratación y reparación — infusión de ingredientes exclusivos para restaurar y fortalecer la fibra desde adentro.",
+      tag: "Tratamiento estrella del estudio",
       hot: true,
       icon: `<path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/>`
+    },
+    {
+      name: "Nanoterapia capilar",
+      desc: "Línea de anti-envejecimiento y rejuvenecimiento terapéutico capilar con equipo especializado, según el diagnóstico de tu cabello.",
+      tag: "Certificación en nanoterapias",
+      icon: `<path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/>`
+    },
+    {
+      name: "Alisado orgánico progresivo",
+      desc: "Procedimiento 100% orgánico, sin formol. Elimina el frizz al 100% y alacia hasta un 70% con resultados progresivos.",
+      tag: "Todo tipo de cabello",
+      icon: `<path d="M4 7h16M4 12h10M4 17h14" stroke-linecap="round"/>`
     },
     {
       name: "Diagnóstico capilar",
       desc: "Análisis del cuero cabelludo y la fibra capilar antes de recomendar cualquier tratamiento.",
       tag: "Primer paso de todo tratamiento",
       icon: `<path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/>`
-    },
-    {
-      name: "Reconstrucción capilar",
-      desc: "Tratamientos de reconstrucción para devolver fuerza y estructura al cabello dañado.",
-      tag: "Cabello dañado o tratado",
-      icon: `<path d="M4 12c2-4 5-6 8-6s6 2 8 6c-2 4-5 6-8 6s-6-2-8-6Z"/><circle cx="12" cy="12" r="2"/>`
-    },
-    {
-      name: "Asesoría de imagen",
-      desc: "Recomendaciones de maquillaje y cuidado capilar a tu medida, pensadas para el día a día.",
-      tag: "A tu medida",
-      icon: `<path d="M12 4v16M4 12h16" stroke-linecap="round"/>`
     }
   ],
+  treatmentBenefits: {
+    title: "Beneficios",
+    subtitle: "Del tratamiento de fortalecimiento y rejuvenecimiento capilar",
+    items: [
+      "Es un sistema de fortalecimiento capilar <strong>nutritivo</strong> y <strong>revitalizante</strong> para el cabello.",
+      "Proporciona máxima <strong>hidratación</strong> y <strong>reparación</strong>.",
+      "Es una infusión de ingredientes exclusivos que ayudan a <strong>restaurar</strong>, <strong>renovar</strong> y <strong>fortalecer</strong> las fibras de proteínas naturales dentro de las capas internas del cabello.",
+      "Es una línea de <strong>anti-envejecimiento</strong> y de <strong>rejuvenecimiento</strong> terapéutico capilar.",
+      "Elimina a un 100% el frizz y alacia hasta un 70%.",
+      "Es apto para todo tipo de cabellos (liso, rizado u ondulado).",
+      "Un procedimiento 100% <strong>orgánico</strong>; no contiene formol y proporciona <strong>resultados progresivos</strong>.",
+      "Contribuye al <strong>crecimiento del cabello</strong> y a su vez crea un escudo protector para el cabello.",
+      "Evita la caída del cabello.",
+      "Es un tratamiento apto para cabello procesado o químicamente tratado, mujeres embarazadas, pre y adolescentes, niños y hombres (no hay limitante)."
+    ]
+  },
   gallery: [
     { image: "images/gallery/IMG_0653.jpeg" },
     { image: "images/gallery/IMG_0655.jpeg" },
@@ -1174,6 +1236,22 @@ const CONFIG = {
       </div>
     </div>
   `).join("");
+
+  // Treatment benefits (from studio catalog)
+  const benefitsEl = document.getElementById("service-benefits");
+  if(benefitsEl && CONFIG.treatmentBenefits){
+    const b = CONFIG.treatmentBenefits;
+    benefitsEl.innerHTML = `
+      <div class="service-benefits-head">
+        <h3>${b.title}</h3>
+        <p>${b.subtitle}</p>
+      </div>
+      <ul class="benefits-list">
+        ${b.items.map(item=>`<li>${item}</li>`).join("")}
+      </ul>
+    `;
+    benefitsEl.hidden = false;
+  }
 
   // Testimonials
   const tg = document.getElementById("testimonials-grid");
