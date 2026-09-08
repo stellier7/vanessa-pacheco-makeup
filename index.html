@@ -610,7 +610,7 @@
       max-width:100%;
     }
     .hero-img{
-      object-position:right center;
+      object-position:72% center;
     }
     .hero-field, .hero-grain{ display:none; }
     .about-grid{ grid-template-columns:1fr; gap:44px; }
@@ -627,7 +627,7 @@
       padding-inline: clamp(24px, 6vw, 32px);
     }
     .hero-img{
-      object-position:82% center;
+      object-position:74% center;
     }
     .scroll-cue{ left: clamp(24px, 6vw, 32px); }
     section{ padding:80px 0; }
@@ -1115,8 +1115,10 @@ if(!reduced){
     galleryScale:isCoarse ? 0.05 : 0.06,
     tiltMax:     canHover ? 14 : 11,
     tiltScroll:  isCoarse ? 12 : 10,
-    heroDrift:   isCoarse ? 0.12 : 0.18,
+    heroDrift:   isCoarse ? 0.14 : 0.18,
     heroImgX:    isCoarse ? 0 : 8,
+    heroScroll:  isCoarse ? 0.28 : 0.22,
+    heroTouch:   isCoarse ? 10 : 14,
   };
 
   const blobs = document.querySelectorAll('[data-parallax]');
@@ -1216,11 +1218,11 @@ if(!reduced){
     }
 
     if(heroImg){
-      const scrollY = y * (isCoarse ? 0.12 : 0.22);
-      const strength = isCoarse ? 6 : 14;
+      const scrollY = y * MOTION.heroScroll;
+      const strength = MOTION.heroTouch;
       const mx = isCoarse ? 0 : ((canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6);
-      const my = (canHover || ptrOn) ? ptrY * strength : ptrY * strength * 0.5;
-      const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.02 : 0.04);
+      const my = (canHover || ptrOn) ? ptrY * strength : (isCoarse && ptrOn ? ptrY * strength * 0.85 : ptrY * strength * 0.5);
+      const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.05 : 0.04);
       heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
     }
 
