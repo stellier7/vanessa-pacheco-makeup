@@ -91,8 +91,43 @@
   [data-reveal="scale"]{ transform:scale(0.88); }
   [data-reveal="scale"].is-visible{ transform:scale(1); }
 
+  /* Hero content — slide in from left on load */
+  .hero .hero-inner [data-reveal]{
+    filter:none;
+    transform:translateX(-56px);
+    opacity:0;
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .hero .hero-inner [data-reveal].is-visible{
+    transform:translateX(0);
+    opacity:1;
+  }
+  .hero .scroll-cue{
+    filter:none;
+    transform:translateX(-32px);
+    opacity:0;
+    transition:opacity .8s var(--ease) .5s, transform .8s var(--ease) .5s;
+  }
+  .hero .scroll-cue.is-visible{
+    transform:translateX(0);
+    opacity:1;
+  }
+  .hero-meta .item{
+    opacity:0;
+    transform:translateX(-28px);
+    transition:opacity .75s var(--ease), transform .75s var(--ease);
+  }
+  .hero-meta.is-visible .item{
+    opacity:1;
+    transform:translateX(0);
+  }
+  .hero-meta.is-visible .item:nth-child(1){ transition-delay:.38s; }
+  .hero-meta.is-visible .item:nth-child(2){ transition-delay:.48s; }
+  .hero-meta.is-visible .item:nth-child(3){ transition-delay:.58s; }
+
   @media (prefers-reduced-motion: reduce){
     [data-reveal]{ opacity:1 !important; transform:none !important; filter:none !important; transition:none !important; }
+    .hero .hero-inner [data-reveal], .hero .scroll-cue, .hero-meta .item{ opacity:1 !important; transform:none !important; transition:none !important; }
     *{ scroll-behavior:auto !important; animation:none !important; }
   }
 
@@ -481,6 +516,85 @@
     .btn-primary:active, .nav-cta:active{ transform:scale(0.97); }
   }
   .gallery-tile .gallery-fallback{ position:absolute; inset:0; }
+  .gallery-tile.has-image::before{
+    content:'';
+    position:absolute; inset:0; z-index:3; pointer-events:none;
+    background:rgba(0,0,0,0.2);
+    opacity:0; transition:opacity .35s var(--ease);
+  }
+  .gallery-tile.has-image:hover::before{ opacity:1; }
+  .gallery-tile .zoom-hint{
+    position:absolute; bottom:14px; right:14px; z-index:4;
+    width:34px; height:34px; border-radius:50%;
+    border:1px solid rgba(255,255,255,0.35);
+    background:rgba(0,0,0,0.45);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:scale(0.85);
+    transition:opacity .35s var(--ease), transform .35s var(--ease);
+    pointer-events:none;
+  }
+  .gallery-tile.has-image:hover .zoom-hint{ opacity:1; transform:scale(1); }
+  .gallery-tile .zoom-hint svg{ width:15px; height:15px; opacity:.9; }
+
+  /* ============ GALLERY LIGHTBOX ============ */
+  .lightbox{
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(16px,4vw,48px);
+    background:rgba(0,0,0,0.92);
+    backdrop-filter:blur(12px);
+    opacity:0; visibility:hidden;
+    transition:opacity .35s var(--ease), visibility .35s var(--ease);
+  }
+  .lightbox.is-open{ opacity:1; visibility:visible; }
+  .lightbox-panel{
+    position:relative; width:min(92vw,1100px); max-height:88vh;
+    display:flex; align-items:center; justify-content:center;
+    transform:scale(0.96); transition:transform .35s var(--ease);
+  }
+  .lightbox.is-open .lightbox-panel{ transform:scale(1); }
+  .lightbox-img{
+    display:block; max-width:100%; max-height:88vh;
+    width:auto; height:auto; object-fit:contain;
+    border-radius:12px; box-shadow:0 30px 80px rgba(0,0,0,0.65);
+    user-select:none; -webkit-user-drag:none;
+  }
+  .lightbox-close, .lightbox-nav{
+    position:absolute; z-index:2;
+    border:1px solid rgba(255,255,255,0.22);
+    background:rgba(0,0,0,0.55); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:background .25s var(--ease), border-color .25s var(--ease), transform .2s var(--ease);
+  }
+  .lightbox-close:hover, .lightbox-nav:hover{
+    background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.45);
+  }
+  .lightbox-close{
+    top:clamp(12px,3vw,24px); right:clamp(12px,3vw,24px);
+    width:44px; height:44px; border-radius:50%;
+  }
+  .lightbox-close svg{ width:18px; height:18px; }
+  .lightbox-nav{
+    top:50%; transform:translateY(-50%);
+    width:46px; height:46px; border-radius:50%;
+  }
+  .lightbox-nav:hover{ transform:translateY(-50%) scale(1.05); }
+  .lightbox-nav svg{ width:18px; height:18px; }
+  .lightbox-prev{ left:clamp(8px,2vw,20px); }
+  .lightbox-next{ right:clamp(8px,2vw,20px); }
+  .lightbox-counter{
+    position:absolute; bottom:clamp(12px,3vw,24px); left:50%;
+    transform:translateX(-50%);
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:rgba(255,255,255,0.65);
+    background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.14);
+    padding:8px 14px; border-radius:999px;
+  }
+  body.lightbox-open{ overflow:hidden; }
+  @media (max-width: 620px){
+    .lightbox-nav{ width:40px; height:40px; }
+    .lightbox-close{ width:40px; height:40px; }
+  }
 
   /* ============ TESTIMONIALS ============ */
   .testimonials-grid{
@@ -682,18 +796,18 @@
     <div class="hero-grain"></div>
 
     <div class="wrap hero-inner">
-      <div class="eyebrow-row" data-reveal>
+      <div class="eyebrow-row" data-reveal style="--delay:0s">
         <span class="eyebrow-dot"></span>
         <span>Tegucigalpa, Honduras</span>
       </div>
 
-      <h1 data-reveal>Belleza que se <span class="accent-word">nota</span>, técnica que no falla.</h1>
+      <h1 data-reveal style="--delay:.1s">Belleza que se <span class="accent-word">nota</span>, técnica que no falla.</h1>
 
-      <p class="hero-desc" data-reveal style="--delay:.1s">
+      <p class="hero-desc" data-reveal style="--delay:.2s">
         <span id="hero-name">Vanessa Pacheco Studio</span> es el espacio de <span id="hero-artist">Vanessa Pacheco Handal</span> para maquillaje profesional y cuidado capilar en Tegucigalpa — diagnóstico, tratamiento y el resultado final, en una misma cita.
       </p>
 
-      <div class="hero-actions" data-reveal style="--delay:.2s">
+      <div class="hero-actions" data-reveal style="--delay:.3s">
         <a href="#" class="btn btn-primary" id="hero-whatsapp" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 18.14h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.37c0-4.55 3.7-8.25 8.26-8.25 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.71 8.22-8.25 8.22Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.4-.12-.56.13-.17.25-.65.81-.79.97-.15.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.22-.73-.66-1.23-1.46-1.37-1.71-.15-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.15.16-.25.24-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.02 2.57.12.17 1.75 2.67 4.24 3.75.59.26 1.06.41 1.42.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.16-.48-.28Z"/></svg>
           Agenda por WhatsApp
@@ -701,7 +815,7 @@
         <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
       </div>
 
-      <div class="hero-meta" data-reveal style="--delay:.3s">
+      <div class="hero-meta" data-reveal style="--delay:.35s">
         <div class="item">
           <span class="label">Especialidad</span>
           <span class="value">Maquillaje &amp; cabello</span>
@@ -717,7 +831,7 @@
       </div>
     </div>
 
-    <div class="scroll-cue"><span class="line"></span><span>Desliza</span></div>
+    <div class="scroll-cue" id="scroll-cue"><span class="line"></span><span>Desliza</span></div>
   </header>
 
   <!-- ============ ABOUT / ARTIST ============ -->
@@ -864,6 +978,22 @@
     Agendar por WhatsApp
   </a>
 
+  <div class="lightbox" id="gallery-lightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Vista previa de galería">
+    <button type="button" class="lightbox-close" id="lightbox-close" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+    </button>
+    <button type="button" class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button type="button" class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="lightbox-panel">
+      <img src="" alt="" class="lightbox-img" id="lightbox-img" decoding="async">
+    </div>
+    <div class="lightbox-counter" id="lightbox-counter" aria-live="polite"></div>
+  </div>
+
 <script>
 /* ============================================================
    CONFIG — the ONLY block that changes per prospect (see
@@ -957,7 +1087,10 @@ const CONFIG = {
     { image: "images/gallery/IMG_0664.jpeg" },
     { image: "images/gallery/IMG_0665.jpeg" },
     { image: "images/gallery/IMG_0666.jpeg" },
-    { image: "images/gallery/IMG_0667.jpeg" }
+    { image: "images/gallery/IMG_0667.jpeg" },
+    { image: "images/gallery/IMG_0669.jpeg" },
+    { image: "images/gallery/IMG_0670.jpeg" },
+    { image: "images/gallery/IMG_0671.jpeg" }
   ]
 };
 
@@ -1055,9 +1188,13 @@ const CONFIG = {
 
   // Gallery — shows placeholder if image file not yet uploaded
   const gg = document.getElementById("gallery-grid");
+  const galleryImages = [];
   gg.innerHTML = CONFIG.gallery.map((item,i)=>`
-    <div class="gallery-tile" data-parallax-tile data-gallery-idx="${i}">
+    <div class="gallery-tile" data-parallax-tile data-gallery-idx="${i}" role="button" tabindex="0" aria-label="Ver foto ${i + 1}">
       <img src="${item.image}" alt="" class="gallery-img">
+      <div class="zoom-hint" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6" stroke-linecap="round"/></svg>
+      </div>
       <div class="ph gallery-fallback">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5.5-5.5L9 18"/></svg>
         <span>Foto próximamente</span>
@@ -1067,11 +1204,101 @@ const CONFIG = {
   gg.querySelectorAll(".gallery-tile").forEach(tile=>{
     const img = tile.querySelector(".gallery-img");
     const fb = tile.querySelector(".gallery-fallback");
+    const idx = parseInt(tile.dataset.galleryIdx, 10);
     const probe = new Image();
-    probe.onload = () => { fb.style.display = "none"; };
-    probe.onerror = () => { img.style.display = "none"; };
+    probe.onload = () => {
+      fb.style.display = "none";
+      tile.classList.add("has-image");
+      galleryImages[idx] = img.src;
+    };
+    probe.onerror = () => {
+      img.style.display = "none";
+      tile.removeAttribute("role");
+      tile.removeAttribute("tabindex");
+      tile.removeAttribute("aria-label");
+      tile.style.cursor = "default";
+    };
     probe.src = img.src;
   });
+
+  // Gallery lightbox
+  (function initGalleryLightbox(){
+    const lb = document.getElementById("gallery-lightbox");
+    const lbImg = document.getElementById("lightbox-img");
+    const lbCounter = document.getElementById("lightbox-counter");
+    const btnClose = document.getElementById("lightbox-close");
+    const btnPrev = document.getElementById("lightbox-prev");
+    const btnNext = document.getElementById("lightbox-next");
+    if(!lb || !lbImg) return;
+
+    let current = 0;
+    let touchStartX = 0;
+
+    const available = () => galleryImages.map((src,i)=> src ? i : -1).filter(i=> i >= 0);
+    const showAt = (index)=>{
+      const items = available();
+      if(!items.length) return;
+      current = ((index % items.length) + items.length) % items.length;
+      const srcIdx = items[current];
+      lbImg.src = galleryImages[srcIdx];
+      lbCounter.textContent = `${current + 1} / ${items.length}`;
+      btnPrev.style.display = items.length > 1 ? "" : "none";
+      btnNext.style.display = items.length > 1 ? "" : "none";
+    };
+    const open = (srcIdx)=>{
+      const items = available();
+      const pos = items.indexOf(srcIdx);
+      if(pos < 0) return;
+      current = pos;
+      showAt(current);
+      lb.hidden = false;
+      lb.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
+      requestAnimationFrame(()=> lb.classList.add("is-open"));
+      btnClose.focus();
+    };
+    const close = ()=>{
+      lb.classList.remove("is-open");
+      lb.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-open");
+      setTimeout(()=>{ lb.hidden = true; lbImg.removeAttribute("src"); }, 320);
+    };
+    const step = (dir)=> showAt(current + dir);
+
+    gg.addEventListener("click", (e)=>{
+      const tile = e.target.closest(".gallery-tile.has-image");
+      if(!tile) return;
+      open(parseInt(tile.dataset.galleryIdx, 10));
+    });
+    gg.addEventListener("keydown", (e)=>{
+      if(e.key !== "Enter" && e.key !== " ") return;
+      const tile = e.target.closest(".gallery-tile.has-image");
+      if(!tile) return;
+      e.preventDefault();
+      open(parseInt(tile.dataset.galleryIdx, 10));
+    });
+
+    btnClose.addEventListener("click", close);
+    btnPrev.addEventListener("click", ()=> step(-1));
+    btnNext.addEventListener("click", ()=> step(1));
+    lb.addEventListener("click", (e)=>{ if(e.target === lb) close(); });
+
+    document.addEventListener("keydown", (e)=>{
+      if(lb.hidden) return;
+      if(e.key === "Escape") close();
+      if(e.key === "ArrowLeft") step(-1);
+      if(e.key === "ArrowRight") step(1);
+    });
+
+    lb.addEventListener("touchstart", (e)=>{
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive:true });
+    lb.addEventListener("touchend", (e)=>{
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(dx) < 40) return;
+      step(dx > 0 ? -1 : 1);
+    }, { passive:true });
+  })();
 
   // Re-observe dynamically injected reveal elements
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.__revealIO){
@@ -1108,6 +1335,25 @@ if(!reduced){
   });
   window.__revealIO = io;
   document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+
+  // Hero slides in immediately on load (already in viewport)
+  function revealHeroContent(){
+    document.querySelectorAll('.hero .hero-inner [data-reveal]').forEach(el=>{
+      const delay = parseFloat(el.style.getPropertyValue('--delay')) || 0;
+      setTimeout(()=> el.classList.add('is-visible'), delay * 1000);
+    });
+    const meta = document.querySelector('.hero-meta');
+    const cue = document.getElementById('scroll-cue');
+    setTimeout(()=>{
+      if(meta) meta.classList.add('is-visible');
+      if(cue) cue.classList.add('is-visible');
+    }, 320);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=> requestAnimationFrame(revealHeroContent));
+  } else {
+    requestAnimationFrame(revealHeroContent);
+  }
 } else {
   document.querySelectorAll('[data-reveal]').forEach(el=>el.classList.add('is-visible'));
 }
