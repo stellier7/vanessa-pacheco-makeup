@@ -6,9 +6,10 @@ Sube tus archivos en estas carpetas. El sitio los detecta automáticamente segú
 
 | Carpeta | Archivo | Uso |
 |---------|---------|-----|
-| `logo/` | **`logo.png`** | Logo del estudio + favicon (ícono del navegador) |
-| `portrait/` | **`portrait.jpg`** | Foto de Vanessa en la sección «La artista» |
-| `gallery/` | **`01.jpg`**, **`02.jpg`**, … **`08.jpg`** | Galería de trabajos (mínimo 4, hasta 8) |
+| `logo/` | **`IMG_0654.jpeg`** | Logo del estudio + favicon |
+| `portrait/` | **`IMG_0668.jpeg`** | Foto de Vanessa en la sección «La artista» |
+| `images/` (raíz) | **`IMG_0653.jpeg`** | Foto principal del hero |
+| `gallery/` | **`IMG_0653.jpeg`**, etc. | Galería de trabajos |
 
 ### Recomendaciones
 

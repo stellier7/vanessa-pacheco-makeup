@@ -118,10 +118,39 @@
   .hero{
     position:relative;
     min-height:100svh;
-    display:flex; flex-direction:column; justify-content:center;
-    padding-top:110px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,0.95fr);
+    align-items:center;
+    padding-top:0;
     overflow:hidden;
+    background:var(--cream);
   }
+  .hero-media{
+    position:absolute;
+    top:0; right:0;
+    width:min(54%, 720px);
+    height:100%;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+  }
+  .hero-img{
+    width:100%;
+    height:115%;
+    object-fit:cover;
+    object-position:center 20%;
+    will-change:transform;
+    transform:translateZ(0) scale(1.08);
+    backface-visibility:hidden;
+    filter:grayscale(100%) contrast(1.05);
+  }
+  .hero-media-overlay{
+    position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(to right, var(--cream) 0%, rgba(245,245,245,0.92) 18%, rgba(245,245,245,0.35) 42%, transparent 68%),
+      linear-gradient(to top, rgba(245,245,245,0.55) 0%, transparent 38%);
+  }
+  .hero.has-hero-image .blob{ opacity:.22; }
   .hero-field{
     position:absolute; inset:0; z-index:0; pointer-events:none;
   }
@@ -143,7 +172,12 @@
     background-size:3px 3px;
   }
 
-  .hero-inner{ position:relative; z-index:2; will-change:transform; }
+  .hero-inner{
+    position:relative; z-index:2; will-change:transform;
+    grid-column:1;
+    padding:clamp(120px,14vh,150px) 0 clamp(80px,10vh,110px);
+    max-width:640px;
+  }
   .eyebrow-row{
     display:flex; align-items:center; gap:10px;
     color:var(--ink-soft); font-size:14px; margin-bottom:22px;
@@ -516,6 +550,28 @@
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 980px){
+    .hero{
+      display:flex;
+      flex-direction:column;
+      min-height:auto;
+    }
+    .hero-media{
+      position:relative;
+      width:100%;
+      height:clamp(280px, 52vw, 420px);
+      order:2;
+    }
+    .hero-media-overlay{
+      background:
+        linear-gradient(to bottom, var(--cream) 0%, rgba(245,245,245,0.75) 22%, transparent 62%),
+        linear-gradient(to top, rgba(245,245,245,0.4) 0%, transparent 35%);
+    }
+    .hero-inner{
+      order:1;
+      padding:110px 0 36px;
+      max-width:none;
+    }
+    .hero-field, .hero-grain{ display:none; }
     .about-grid{ grid-template-columns:1fr; gap:44px; }
     .services-grid{ grid-template-columns:1fr 1fr; }
     .gallery-grid{ grid-template-columns:1fr 1fr; }
@@ -555,6 +611,10 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="top">
+    <div class="hero-media" data-hero-parallax id="hero-media" hidden>
+      <img src="" alt="Vanessa Pacheco Studio — maquillaje profesional" class="hero-img" id="hero-img">
+      <div class="hero-media-overlay"></div>
+    </div>
     <div class="hero-field">
       <div class="blob blob-a" data-parallax="0.18"></div>
       <div class="blob blob-b" data-parallax="0.28"></div>
@@ -761,6 +821,7 @@ const CONFIG = {
   images: {
     logo: "images/logo/IMG_0654.jpeg",
     portrait: "images/portrait/IMG_0668.jpeg",
+    hero: "images/IMG_0653.jpeg",
   },
   contact: {
     whatsapp: "50499613011", // digits only
@@ -896,6 +957,20 @@ const CONFIG = {
     portrait.src = CONFIG.images.portrait;
   }
 
+  // Hero image
+  const heroEl = document.querySelector(".hero");
+  const heroMedia = document.getElementById("hero-media");
+  const heroImg = document.getElementById("hero-img");
+  if(CONFIG.images?.hero && heroImg && heroMedia){
+    const heroProbe = new Image();
+    heroProbe.onload = () => {
+      heroImg.src = CONFIG.images.hero;
+      heroMedia.hidden = false;
+      heroEl?.classList.add("has-hero-image");
+    };
+    heroProbe.src = CONFIG.images.hero;
+  }
+
   // Services
   const grid = document.getElementById("services-grid");
   grid.innerHTML = CONFIG.services.map((s,i)=>`
@@ -997,6 +1072,7 @@ if(!reduced){
   const blobs = document.querySelectorAll('[data-parallax]');
   const tiles = document.querySelectorAll('[data-parallax-tile]');
   const heroInner = document.querySelector('.hero-inner');
+  const heroImg = document.querySelector('.hero-img');
   const vh = () => window.innerHeight;
 
   let ptrX = 0, ptrY = 0, ptrOn = false;
@@ -1087,6 +1163,15 @@ if(!reduced){
         heroInner.style.transform = '';
         heroInner.style.opacity = '';
       }
+    }
+
+    if(heroImg){
+      const scrollY = y * (isCoarse ? 0.18 : 0.22);
+      const strength = isCoarse ? 10 : 14;
+      const mx = (canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6;
+      const my = (canHover || ptrOn) ? ptrY * strength : ptrY * strength * 0.6;
+      const scale = 1.08 + Math.min(y / viewH, 1) * 0.04;
+      heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
     }
 
     tiles.forEach((t,i)=>{
