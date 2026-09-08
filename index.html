@@ -321,7 +321,18 @@
       repeating-linear-gradient(120deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 26px);
   }
   .about-card-inner.has-photo::before{
+    z-index:1;
     background:linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 50%);
+  }
+  .about-card-photo{
+    position:absolute;
+    inset:-14%;
+    z-index:0;
+    background-size:cover;
+    background-position:center;
+    will-change:transform;
+    transform:translateZ(0) scale(1.12);
+    backface-visibility:hidden;
   }
   .about-card-inner.has-photo .about-card-tag{
     background:rgba(10,10,10,0.82);
@@ -329,7 +340,7 @@
     border:1px solid var(--line);
   }
   .about-card-tag{
-    position:relative; z-index:1;
+    position:relative; z-index:2;
     margin:26px; padding:16px 20px;
     background:rgba(20,20,20,0.85);
     backdrop-filter:blur(8px);
@@ -716,6 +727,7 @@
         <div class="about-grid">
           <div class="about-card tilt-el" data-tilt data-reveal="scale">
             <div class="about-card-inner">
+              <div class="about-card-photo" id="about-portrait-photo"></div>
               <div class="about-card-tag">Vanessa Pacheco Handal</div>
             </div>
           </div>
@@ -994,12 +1006,11 @@ const CONFIG = {
 
   // Portrait
   const portraitInner = document.querySelector(".about-card-inner");
-  if(CONFIG.images?.portrait && portraitInner){
+  const portraitPhoto = document.getElementById("about-portrait-photo");
+  if(CONFIG.images?.portrait && portraitInner && portraitPhoto){
     const portrait = new Image();
     portrait.onload = () => {
-      portraitInner.style.backgroundImage = `url('${CONFIG.images.portrait}')`;
-      portraitInner.style.backgroundSize = "cover";
-      portraitInner.style.backgroundPosition = "center";
+      portraitPhoto.style.backgroundImage = `url('${CONFIG.images.portrait}')`;
       portraitInner.classList.add("has-photo");
     };
     portrait.src = CONFIG.images.portrait;
@@ -1119,12 +1130,17 @@ if(!reduced){
     heroImgX:    isCoarse ? 0 : 8,
     heroScroll:  isCoarse ? 0.28 : 0.22,
     heroTouch:   isCoarse ? 10 : 14,
+    portraitScroll:isCoarse ? 24 : 36,
+    portraitTouch: isCoarse ? 8 : 12,
+    portraitScale: isCoarse ? 0.05 : 0.07,
   };
 
   const blobs = document.querySelectorAll('[data-parallax]');
   const tiles = document.querySelectorAll('[data-parallax-tile]');
   const heroInner = document.querySelector('.hero-inner');
   const heroImg = document.querySelector('.hero-img');
+  const portraitPhoto = document.querySelector('.about-card-photo');
+  const portraitCard = document.querySelector('.about-card');
   const vh = () => window.innerHeight;
 
   let ptrX = 0, ptrY = 0, ptrOn = false;
@@ -1224,6 +1240,20 @@ if(!reduced){
       const my = (canHover || ptrOn) ? ptrY * strength : (isCoarse && ptrOn ? ptrY * strength * 0.85 : ptrY * strength * 0.5);
       const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.05 : 0.04);
       heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
+    }
+
+    if(portraitPhoto && portraitCard){
+      const rect = portraitCard.getBoundingClientRect();
+      const inView = rect.top < viewH && rect.bottom > 0;
+      if(inView){
+        const center = rect.top + rect.height/2 - viewH/2;
+        const progress = center / viewH;
+        const scrollOff = progress * -MOTION.portraitScroll;
+        const touchY = ptrOn ? ptrY * MOTION.portraitTouch : 0;
+        const touchX = isCoarse ? 0 : (ptrOn ? ptrX * MOTION.portraitTouch * 0.6 : 0);
+        const scale = 1.12 + Math.min(Math.abs(progress), 1) * MOTION.portraitScale;
+        portraitPhoto.style.transform = `scale(${scale}) translate3d(${touchX}px, ${scrollOff + touchY}px, 0)`;
+      }
     }
 
     tiles.forEach((t,i)=>{
