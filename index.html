@@ -40,7 +40,12 @@
   @media (prefers-color-scheme: dark){ /* intentional dark theme */ }
 
   *,*::before,*::after{ box-sizing:border-box; }
-  html{ scroll-behavior:smooth; }
+  html{
+    scroll-behavior:smooth;
+    overflow-x:clip;
+    width:100%;
+    max-width:100%;
+  }
   body{
     margin:0;
     background:var(--cream);
@@ -49,7 +54,11 @@
     font-size:16px;
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
+    overflow-x:clip;
+    width:100%;
+    max-width:100%;
+    overscroll-behavior-x:none;
+    touch-action:pan-y pinch-zoom;
   }
   h1,h2,h3,.display{
     font-family:'Fraunces', serif;
@@ -88,10 +97,11 @@
   }
 
   /* ============ NAV ============ */
-  .nav{
+  nav{
     position:fixed; top:0; left:0; right:0; z-index:100;
     display:flex; align-items:center; justify-content:space-between;
     padding:22px clamp(20px,5vw,64px);
+    max-width:100%;
     transition:background .5s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease);
   }
   .nav.scrolled{
@@ -144,7 +154,7 @@
     object-fit:cover;
     object-position:center center;
     will-change:transform;
-    transform:translateZ(0) scale(1.06);
+    transform:translateZ(0) scale(1.04);
     backface-visibility:hidden;
     filter:grayscale(100%) contrast(1.12) brightness(0.5);
     opacity:0.95;
@@ -267,7 +277,7 @@
   @keyframes cue{ 0%{left:-100%;} 50%{left:0;} 100%{left:100%;} }
 
   /* ============ SECTION SCAFFOLD ============ */
-  section{ position:relative; padding:120px 0; }
+  section{ position:relative; padding:120px 0; overflow-x:clip; }
   .section-head{
     display:flex; flex-direction:column; gap:16px;
     max-width:640px;
@@ -405,6 +415,7 @@
 
   /* ============ GALLERY — parallax masonry ============ */
   .gallery{ background:#000000; border-radius:40px; color:var(--ink); overflow:hidden; border:1px solid var(--line); }
+  .gallery .wrap{ overflow:hidden; }
   .gallery .section-head h2, .gallery .kicker{ color:var(--ink); }
   .gallery .kicker::before{ background:var(--ink); }
   .gallery .section-head p{ color:var(--ink-soft); }
@@ -423,6 +434,7 @@
     cursor:pointer;
     transform:translateZ(0);
     backface-visibility:hidden;
+    contain:paint;
   }
   .gallery-tile:hover{ box-shadow:0 28px 60px -10px rgba(0,0,0,0.8); }
   .gallery-tile:nth-child(2){ margin-top:52px; }
@@ -471,6 +483,9 @@
     transition:transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease);
   }
   .testimonial-card:hover{ transform:translateY(-6px) rotate(-0.5deg); border-color:var(--line-strong); background:var(--accent-hover); }
+  @media (hover: none){
+    .testimonial-card:hover{ transform:none; }
+  }
   .testimonial-card .stars{ color:var(--accent); font-size:14px; letter-spacing:2px; }
   .testimonial-card blockquote{
     margin:0; font-family:'Fraunces', serif; font-style:italic;
@@ -526,7 +541,7 @@
   .contact-cta-big:hover{ transform:translateY(-4px) scale(1.02); background:var(--accent-hover); }
   .contact-cta-big svg{ width:22px; height:22px; }
 
-  .social-row{ display:flex; gap:12px; margin-top:16px; }
+  .social-row{ display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
   .social-pill{
     display:inline-flex; align-items:center; gap:9px;
     padding:11px 18px; border-radius:100px; border:1px solid var(--line);
@@ -1086,14 +1101,16 @@ if(!reduced){
 if(!reduced){
   const MOTION = {
     blobScroll:  isCoarse ? 0.42 : 0.5,
-    blobPointer: isCoarse ? 12 : 18,
+    blobPointer: isCoarse ? 8 : 18,
     blobFloat:   isCoarse ? 16 : 20,
-    galleryY:    isCoarse ? 90 : 110,
-    galleryX:    isCoarse ? 22 : 30,
-    galleryScale:isCoarse ? 0.09 : 0.06,
+    galleryY:    isCoarse ? 60 : 110,
+    galleryX:    isCoarse ? 0 : 30,
+    galleryRotate:isCoarse ? 0 : 2.5,
+    galleryScale:isCoarse ? 0.05 : 0.06,
     tiltMax:     canHover ? 14 : 11,
     tiltScroll:  isCoarse ? 12 : 10,
-    heroDrift:   isCoarse ? 0.15 : 0.18,
+    heroDrift:   isCoarse ? 0.12 : 0.18,
+    heroImgX:    isCoarse ? 0 : 8,
   };
 
   const blobs = document.querySelectorAll('[data-parallax]');
@@ -1193,11 +1210,11 @@ if(!reduced){
     }
 
     if(heroImg){
-      const scrollY = y * (isCoarse ? 0.18 : 0.22);
-      const strength = isCoarse ? 10 : 14;
-      const mx = (canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6;
-      const my = (canHover || ptrOn) ? ptrY * strength : ptrY * strength * 0.6;
-      const scale = 1.08 + Math.min(y / viewH, 1) * 0.04;
+      const scrollY = y * (isCoarse ? 0.12 : 0.22);
+      const strength = isCoarse ? 6 : 14;
+      const mx = isCoarse ? 0 : ((canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6);
+      const my = (canHover || ptrOn) ? ptrY * strength : ptrY * strength * 0.5;
+      const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.02 : 0.04);
       heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
     }
 
@@ -1207,9 +1224,9 @@ if(!reduced){
       const progress = center / viewH;
       const dir = i % 2 === 0 ? 1 : -1;
       const col = i % 4;
-      const offsetY = Math.max(Math.min(progress * -MOTION.galleryY * dir, 75), -75);
-      const offsetX = Math.max(Math.min(progress * MOTION.galleryX * (col - 1.5), 28), -28);
-      const rotate = progress * 2.5 * dir;
+      const offsetY = Math.max(Math.min(progress * -MOTION.galleryY * dir, isCoarse ? 40 : 75), isCoarse ? -40 : -75);
+      const offsetX = isCoarse ? 0 : Math.max(Math.min(progress * MOTION.galleryX * (col - 1.5), 28), -28);
+      const rotate = isCoarse ? 0 : progress * MOTION.galleryRotate * dir;
       t.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0) rotate(${rotate}deg)`;
 
       const img = t.querySelector('.gallery-img');
@@ -1217,8 +1234,8 @@ if(!reduced){
         const inView = rect.top < viewH && rect.bottom > 0;
         const dist = Math.min(Math.abs(progress), 1);
         const scale = inView ? 1.12 + dist * MOTION.galleryScale : 1.12;
-        const imgY = progress * -24;
-        const imgX = progress * 8 * (i % 2 === 0 ? 1 : -1);
+        const imgY = progress * (isCoarse ? -14 : -24);
+        const imgX = isCoarse ? 0 : progress * MOTION.heroImgX * (i % 2 === 0 ? 1 : -1);
         img.style.transform = `scale(${scale}) translate3d(${imgX}px, ${imgY}px, 0)`;
       }
     });
