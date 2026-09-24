@@ -407,101 +407,143 @@
   .cert-text b{ font-family:'Fraunces', serif; font-weight:500; display:block; margin-bottom:2px; }
   .cert-text span{ color:var(--ink-soft); font-size:14.5px; }
 
-  /* ============ SERVICES — apple-style 3D cards ============ */
-  .services-grid{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:26px;
-  }
-  .service-card{
-    perspective:1200px;
-  }
-  .service-card-inner{
-    position:relative;
-    background:transparent;
-    border-radius:var(--radius);
-    padding:34px 28px 30px;
-    height:100%;
-    box-shadow:none;
+  /* ============ SERVICES — expandable accordion ============ */
+  .services-accordion{
+    display:flex;
+    flex-direction:column;
+    max-width:760px;
+    margin:0 auto;
     border:1px solid var(--line);
-    transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);
-    transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
-    will-change:transform;
-    display:flex; flex-direction:column; gap:18px;
+    border-radius:var(--radius);
     overflow:hidden;
-    touch-action:pan-y;
   }
-  .service-card-inner::after{
-    content:'';
-    position:absolute; inset:0;
-    background:linear-gradient(135deg, rgba(255,255,255,0.08), transparent 55%);
-    opacity:0; transition:opacity .4s;
-    pointer-events:none;
-  }
-  .service-card.is-hot .service-card-inner{
-    border-color:var(--line-strong);
-    box-shadow:none;
-  }
-  .service-card.is-hot .service-card-inner::after{ opacity:1; }
-
-  .service-icon{
-    width:54px; height:54px; border-radius:16px;
-    background:transparent;
-    display:flex; align-items:center; justify-content:center;
-    color:var(--ink);
-    box-shadow:none;
-    border:1px solid var(--line);
-  }
-  .service-icon svg{ width:26px; height:26px; }
-  .service-card h3{ font-size:21px; line-height:1.25; }
-  .service-card p{ color:var(--ink-soft); font-size:15px; }
-  .service-tag{
-    margin-top:auto; align-self:flex-start;
-    font-size:12.5px; color:var(--ink-faint);
-    padding-top:14px; border-top:1px solid var(--line); width:100%;
-  }
-
-  /* Treatment benefits — from studio catalog */
-  .service-benefits{
-    margin-top:clamp(48px,6vw,72px);
-    padding:clamp(32px,4vw,48px);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    background:linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
-  }
-  .service-benefits-head{
-    text-align:center; max-width:640px; margin:0 auto clamp(28px,4vw,40px);
-  }
-  .service-benefits-head h3{
-    font-family:'Fraunces', serif;
-    font-size:clamp(26px,3vw,34px);
-    font-weight:500;
-    margin-bottom:10px;
-    padding-bottom:16px;
+  .service-item{
     border-bottom:1px solid var(--line);
-    display:inline-block;
   }
-  .service-benefits-head p{ color:var(--ink-soft); font-size:15px; }
-  .benefits-list{
+  .service-item:last-child{ border-bottom:none; }
+  .service-item.is-hot .service-trigger{
+    background:linear-gradient(135deg, rgba(255,255,255,0.06), transparent 55%);
+  }
+  .service-trigger{
+    width:100%;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding:clamp(16px,2.5vw,22px) clamp(16px,3vw,24px);
+    min-height:56px;
+    background:transparent;
+    border:none;
+    color:inherit;
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  .service-trigger:hover{ background:rgba(255,255,255,0.03); }
+  .service-trigger:focus-visible{
+    outline:2px solid var(--ink);
+    outline-offset:-2px;
+  }
+  .service-trigger-text{ flex:1; min-width:0; }
+  .service-trigger h3{
+    font-size:clamp(17px,2.2vw,21px);
+    line-height:1.3;
+    margin:0;
+  }
+  .service-teaser{
+    margin:6px 0 0;
+    font-size:14px;
+    line-height:1.45;
+    color:var(--ink-soft);
+  }
+  .service-chevron{
+    flex-shrink:0;
+    width:28px; height:28px;
+    margin-top:2px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-faint);
+    transition:transform .35s var(--ease), color .25s;
+  }
+  .service-chevron svg{ width:18px; height:18px; }
+  .service-item.is-open .service-chevron{
+    transform:rotate(180deg);
+    color:var(--ink);
+  }
+  .service-panel{
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .4s var(--ease);
+  }
+  .service-item.is-open .service-panel{ grid-template-rows:1fr; }
+  .service-panel-inner{
+    overflow:hidden;
+    min-height:0;
+  }
+  .service-panel-body{
+    padding:0 clamp(16px,3vw,24px) clamp(18px,2.5vw,24px);
     display:flex;
     flex-direction:column;
     gap:14px;
+  }
+  .service-desc{
+    margin:0;
+    font-size:15px;
+    line-height:1.65;
+    color:var(--ink-soft);
+  }
+  .service-details{
     list-style:none;
-    margin:0; padding:0;
-    max-width:760px;
-    margin-inline:auto;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .service-details li{
+    position:relative;
+    padding-left:18px;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--ink-soft);
+  }
+  .service-details li::before{
+    content:'';
+    position:absolute;
+    left:0; top:8px;
+    width:6px; height:6px;
+    border-radius:50%;
+    background:var(--ink-faint);
+  }
+  .service-benefits-label{
+    margin:4px 0 0;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .benefits-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    list-style:none;
+    margin:0;
+    padding:0;
   }
   .benefits-list li{
     position:relative;
-    padding-left:22px;
-    font-size:15px;
-    line-height:1.65;
+    padding-left:20px;
+    font-size:14px;
+    line-height:1.6;
     color:var(--ink-soft);
     text-align:left;
   }
   .benefits-list li::before{
     content:'';
     position:absolute;
-    left:0; top:9px;
-    width:8px; height:8px;
+    left:0; top:8px;
+    width:7px; height:7px;
     border-radius:50%;
     background:var(--ink);
     box-shadow:0 0 0 3px rgba(255,255,255,0.08);
@@ -803,7 +845,6 @@
     }
     .hero-field, .hero-grain{ display:none; }
     .about-grid{ grid-template-columns:1fr; gap:44px; }
-    .services-grid{ grid-template-columns:1fr 1fr; }
     .gallery-grid{ grid-template-columns:1fr 1fr; }
     .testimonials-grid{ grid-template-columns:1fr 1fr; }
     .contact-grid{ grid-template-columns:1fr; gap:40px; }
@@ -820,7 +861,6 @@
     }
     .scroll-cue{ left: clamp(24px, 6vw, 32px); }
     section{ padding:80px 0; }
-    .services-grid{ grid-template-columns:1fr; }
     .gallery-grid{ grid-template-columns:1fr 1fr; }
     .gallery-tile:nth-child(2), .gallery-tile:nth-child(4), .gallery-tile:nth-child(3n){ margin-top:0; }
     .about-grid, .contact-grid{ gap:32px; }
@@ -951,8 +991,7 @@
         <p data-reveal style="--delay:.1s">Maquillaje y cabello, tratados como una sola disciplina — desde el diagnóstico hasta el acabado final.</p>
       </div>
 
-      <div class="services-grid" id="services-grid"><!-- injected by JS --></div>
-      <div class="service-benefits" id="service-benefits" data-reveal hidden><!-- injected by JS --></div>
+      <div class="services-accordion" id="services-grid"><!-- injected by JS --></div>
       <div class="pricing-note" data-reveal id="pricing-note"></div>
     </div>
   </section>
@@ -1115,60 +1154,78 @@ const CONFIG = {
   ],
   services: [
     {
-      name: "Maquillaje profesional",
-      desc: "Maquillaje para el día a día y ocasiones especiales, adaptado a tu piel y al evento.",
-      tag: "Piel · Día y noche",
+      name: "Maquillaje Profesional",
+      teaser: "Base líquida o aerógrafo, según tu piel y el evento.",
+      desc: "Maquillaje profesional adaptado a tu rostro y ocasión — desde el día a día hasta eventos especiales.",
+      details: ["Base líquida", "Base con aerógrafo"],
+      hot: true
+    },
+    {
+      name: "Nanoterapia Capilar",
+      teaser: "Rejuvenecimiento terapéutico según el diagnóstico.",
+      desc: "Tratamiento de anti-envejecimiento y rejuvenecimiento capilar con equipo especializado, indicado según el diagnóstico de tu cabello.",
+      benefits: [
+        "Línea de <strong>anti-envejecimiento</strong> y <strong>rejuvenecimiento</strong> terapéutico capilar.",
+        "Contribuye al <strong>crecimiento del cabello</strong> y crea un escudo protector.",
+        "Ayuda a evitar la caída del cabello."
+      ]
+    },
+    {
+      name: "Corte de Cabello",
+      teaser: "Corte personalizado a tu estilo y tipo de cabello.",
+      desc: "Corte a medida según la forma de tu rostro, la salud de tu cabello y el estilo que buscas."
+    },
+    {
+      name: "Balayage y decoloraciones / corrección de color",
+      teaser: "Iluminaciones, decoloración y corrección profesional.",
+      desc: "Servicios de balayage, decoloración y corrección de color con diagnóstico previo para proteger la fibra capilar."
+    },
+    {
+      name: "Tratamientos Capilares",
+      teaser: "Proteína y enzimas para restaurar la fibra.",
+      desc: "Tratamientos de fortalecimiento nutritivo y revitalizante — hidratación y reparación desde el interior de la fibra.",
+      details: ["Proteína", "Enzimas"],
       hot: true,
-      icon: `<path d="M12 3l2.2 4.7L19 9l-3.5 3.4.8 4.9L12 15l-4.3 2.3.8-4.9L5 9l4.8-1.3L12 3Z" stroke-linejoin="round"/>`
+      benefits: [
+        "Sistema de fortalecimiento capilar <strong>nutritivo</strong> y <strong>revitalizante</strong>.",
+        "Máxima <strong>hidratación</strong> y <strong>reparación</strong>.",
+        "Infusión de ingredientes exclusivos que ayudan a <strong>restaurar</strong>, <strong>renovar</strong> y <strong>fortalecer</strong> las fibras de proteínas naturales.",
+        "Apto para todo tipo de cabellos (liso, rizado u ondulado).",
+        "Procedimiento 100% <strong>orgánico</strong>; no contiene formol y ofrece <strong>resultados progresivos</strong>.",
+        "Apto para cabello procesado o químicamente tratado, mujeres embarazadas, pre y adolescentes, niños y hombres."
+      ]
     },
     {
-      name: "Maquillaje para eventos",
-      desc: "Looks para bodas, sesiones y celebraciones — planificado con prueba previa si el evento lo requiere.",
-      tag: "Eventos especiales",
-      icon: `<path d="M4 20h16"/><path d="M6 20V10l6-6 6 6v10"/><path d="M10 20v-6h4v6"/>`
+      name: "Diseño de Ceja / Depilación hilo y cuchilla",
+      teaser: "Diseño y depilación con hilo o cuchilla.",
+      desc: "Diseño de ceja personalizado y depilación con hilo o cuchilla para un arco limpio y natural."
     },
     {
-      name: "Fortalecimiento capilar",
-      desc: "Sistema nutritivo y revitalizante con máxima hidratación y reparación — infusión de ingredientes exclusivos para restaurar y fortalecer la fibra desde adentro.",
-      tag: "Tratamiento estrella del estudio",
-      hot: true,
-      icon: `<path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/>`
+      name: "Baño de Color",
+      teaser: "Refresco de tono e hidratación del color.",
+      desc: "Baño de color para revitalizar el tono, aportar brillo y refrescar el color sin un proceso agresivo."
     },
     {
-      name: "Nanoterapia capilar",
-      desc: "Línea de anti-envejecimiento y rejuvenecimiento terapéutico capilar con equipo especializado, según el diagnóstico de tu cabello.",
-      tag: "Certificación en nanoterapias",
-      icon: `<path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/>`
+      name: "Tintes",
+      teaser: "Coloración profesional a tu medida.",
+      desc: "Tintes profesionales elegidos según tu tono de piel, el estado del cabello y el resultado que deseas."
     },
     {
-      name: "Alisado orgánico progresivo",
-      desc: "Procedimiento 100% orgánico, sin formol. Elimina el frizz al 100% y alacia hasta un 70% con resultados progresivos.",
-      tag: "Todo tipo de cabello",
-      icon: `<path d="M4 7h16M4 12h10M4 17h14" stroke-linecap="round"/>`
+      name: "Peinados",
+      teaser: "Peinados para el día a día o ocasiones especiales.",
+      desc: "Peinados y recogidos para eventos, sesiones o tu rutina — con acabado que se sostiene."
     },
     {
-      name: "Diagnóstico capilar",
-      desc: "Análisis del cuero cabelludo y la fibra capilar antes de recomendar cualquier tratamiento.",
-      tag: "Primer paso de todo tratamiento",
-      icon: `<path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/>`
+      name: "Secados",
+      teaser: "Secado profesional con forma y movimiento.",
+      desc: "Secado con brush o herramientas profesionales para dejar el cabello con volumen, brillo y forma."
+    },
+    {
+      name: "Evaluación y Diagnóstico Capilar",
+      teaser: "El primer paso antes de cualquier tratamiento.",
+      desc: "Análisis del cuero cabelludo y la fibra capilar para recomendar el tratamiento o servicio adecuado — sin recomendaciones genéricas."
     }
   ],
-  treatmentBenefits: {
-    title: "Beneficios",
-    subtitle: "Del tratamiento de fortalecimiento y rejuvenecimiento capilar",
-    items: [
-      "Es un sistema de fortalecimiento capilar <strong>nutritivo</strong> y <strong>revitalizante</strong> para el cabello.",
-      "Proporciona máxima <strong>hidratación</strong> y <strong>reparación</strong>.",
-      "Es una infusión de ingredientes exclusivos que ayudan a <strong>restaurar</strong>, <strong>renovar</strong> y <strong>fortalecer</strong> las fibras de proteínas naturales dentro de las capas internas del cabello.",
-      "Es una línea de <strong>anti-envejecimiento</strong> y de <strong>rejuvenecimiento</strong> terapéutico capilar.",
-      "Elimina a un 100% el frizz y alacia hasta un 70%.",
-      "Es apto para todo tipo de cabellos (liso, rizado u ondulado).",
-      "Un procedimiento 100% <strong>orgánico</strong>; no contiene formol y proporciona <strong>resultados progresivos</strong>.",
-      "Contribuye al <strong>crecimiento del cabello</strong> y a su vez crea un escudo protector para el cabello.",
-      "Evita la caída del cabello.",
-      "Es un tratamiento apto para cabello procesado o químicamente tratado, mujeres embarazadas, pre y adolescentes, niños y hombres (no hay limitante)."
-    ]
-  },
   gallery: [
     { image: "images/gallery/IMG_0653.jpeg" },
     { image: "images/gallery/IMG_0655.jpeg" },
@@ -1265,34 +1322,52 @@ const CONFIG = {
     heroProbe.src = CONFIG.images.hero;
   }
 
-  // Services
+  // Services — expandable accordion (one open at a time)
   const grid = document.getElementById("services-grid");
-  grid.innerHTML = CONFIG.services.map((s,i)=>`
-    <div class="service-card tilt-el ${s.hot ? 'is-hot':''}" data-tilt data-reveal style="--delay:${(i%3)*0.08}s">
-      <div class="service-card-inner">
-        <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">${s.icon}</svg></div>
-        <h3>${s.name}</h3>
-        <p>${s.desc}</p>
-        <div class="service-tag">${s.tag}</div>
+  const chevronSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  grid.innerHTML = CONFIG.services.map((s,i)=>{
+    const details = Array.isArray(s.details) && s.details.length
+      ? `<ul class="service-details">${s.details.map(d=>`<li>${d}</li>`).join("")}</ul>`
+      : "";
+    const benefits = Array.isArray(s.benefits) && s.benefits.length
+      ? `<p class="service-benefits-label">Beneficios</p><ul class="benefits-list">${s.benefits.map(b=>`<li>${b}</li>`).join("")}</ul>`
+      : "";
+    return `
+    <div class="service-item ${s.hot ? "is-hot" : ""}" data-reveal style="--delay:${Math.min(i,6)*0.05}s">
+      <button type="button" class="service-trigger" aria-expanded="false" id="service-trigger-${i}" aria-controls="service-panel-${i}">
+        <div class="service-trigger-text">
+          <h3>${s.name}</h3>
+          <p class="service-teaser">${s.teaser}</p>
+        </div>
+        <span class="service-chevron">${chevronSvg}</span>
+      </button>
+      <div class="service-panel" id="service-panel-${i}" role="region" aria-labelledby="service-trigger-${i}">
+        <div class="service-panel-inner">
+          <div class="service-panel-body">
+            <p class="service-desc">${s.desc}</p>
+            ${details}
+            ${benefits}
+          </div>
+        </div>
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join("");
 
-  // Treatment benefits (from studio catalog)
-  const benefitsEl = document.getElementById("service-benefits");
-  if(benefitsEl && CONFIG.treatmentBenefits){
-    const b = CONFIG.treatmentBenefits;
-    benefitsEl.innerHTML = `
-      <div class="service-benefits-head">
-        <h3>${b.title}</h3>
-        <p>${b.subtitle}</p>
-      </div>
-      <ul class="benefits-list">
-        ${b.items.map(item=>`<li>${item}</li>`).join("")}
-      </ul>
-    `;
-    benefitsEl.hidden = false;
-  }
+  grid.addEventListener("click", (e)=>{
+    const trigger = e.target.closest(".service-trigger");
+    if(!trigger || !grid.contains(trigger)) return;
+    const item = trigger.closest(".service-item");
+    const willOpen = !item.classList.contains("is-open");
+    grid.querySelectorAll(".service-item.is-open").forEach(openItem=>{
+      openItem.classList.remove("is-open");
+      const btn = openItem.querySelector(".service-trigger");
+      if(btn) btn.setAttribute("aria-expanded", "false");
+    });
+    if(willOpen){
+      item.classList.add("is-open");
+      trigger.setAttribute("aria-expanded", "true");
+    }
+  });
 
   // Testimonials
   const tg = document.getElementById("testimonials-grid");
