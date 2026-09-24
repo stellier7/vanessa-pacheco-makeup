@@ -182,16 +182,16 @@
     z-index:0;
     overflow:hidden;
     pointer-events:none;
+    transform:translateZ(0);
+    backface-visibility:hidden;
   }
   .hero-img{
     width:100%;
-    height:115%;
+    height:100%;
     object-fit:cover;
-    object-position:center center;
-    will-change:transform;
-    transform:translateZ(0) scale(1.04);
+    object-position:82% center;
+    transform:translateZ(0) scale(1.045);
     backface-visibility:hidden;
-    filter:grayscale(100%) contrast(1.12) brightness(0.5);
     opacity:0.95;
   }
   .hero-media-overlay{
@@ -288,6 +288,32 @@
   }
   .btn-ghost:hover{ border-color:var(--accent); color:var(--ink); background:var(--accent-hover); transform:translateY(-4px) scale(1.02); }
 
+  .hero-social{
+    margin-top:22px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .hero-social-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    transition:transform .35s var(--ease), border-color .35s, background .3s, color .3s;
+  }
+  .hero-social-btn:hover{
+    transform:translateY(-3px);
+    border-color:var(--line-strong);
+    background:var(--accent-hover);
+  }
+  .hero-social-btn svg{ width:18px; height:18px; flex:none; }
+
   .hero-meta{
     margin-top:64px;
     display:flex; flex-wrap:wrap; gap:34px;
@@ -365,7 +391,6 @@
     z-index:0;
     background-size:cover;
     background-position:center;
-    will-change:transform;
     transform:translateZ(0) scale(1.12);
     backface-visibility:hidden;
   }
@@ -389,23 +414,113 @@
   .about-copy .lede{ font-family:'Fraunces', serif; font-size:23px; line-height:1.4; color:var(--ink); }
   .about-copy .body-p{ color:var(--ink-soft); font-size:16px; }
 
-  .cert-list{ margin-top:32px; display:flex; flex-direction:column; gap:14px; }
-  .cert-item{
-    display:flex; gap:14px; align-items:flex-start;
-    padding:16px 18px; border:1px solid var(--line); border-radius:16px;
-    background:transparent;
-    transition:transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease);
+  .cert-showcase{
+    margin-top:clamp(48px,6vw,72px);
+    padding-top:clamp(32px,4vw,40px);
+    border-top:1px solid var(--line);
   }
-  .cert-item:hover{ transform:translateX(8px); border-color:var(--line-strong); background:var(--accent-hover); }
-  .cert-icon{
-    flex:none; width:38px; height:38px; border-radius:50%;
-    background:transparent; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--ink);
+  .cert-showcase-head{
+    display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+    gap:16px 24px;
+    margin-bottom:28px;
   }
-  .cert-icon svg{ width:18px; height:18px; }
-  .cert-text b{ font-family:'Fraunces', serif; font-weight:500; display:block; margin-bottom:2px; }
-  .cert-text span{ color:var(--ink-soft); font-size:14.5px; }
+  .cert-showcase-head h3{
+    font-family:'Fraunces', serif;
+    font-size:clamp(24px,3vw,32px);
+    line-height:1.15;
+  }
+  .cert-showcase-head p{
+    max-width:52ch;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+  .cert-carousel{
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .cert-carousel-track{
+    display:flex;
+    gap:18px;
+    width:max-content;
+    padding:22px 18px;
+    animation:cert-scroll 55s linear infinite;
+  }
+  .cert-carousel:hover .cert-carousel-track,
+  .cert-carousel:focus-within .cert-carousel-track{
+    animation-play-state:paused;
+  }
+  @keyframes cert-scroll{
+    to{ transform:translate3d(-50%, 0, 0); }
+  }
+  .cert-slide{
+    flex:none;
+    width:min(300px, 78vw);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:14px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    background:var(--cream-2);
+  }
+  .cert-slide-media{
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:4/3;
+    background:#111;
+    border:1px solid var(--line);
+  }
+  .cert-slide-media img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+  }
+  .cert-slide-title{
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    line-height:1.25;
+    font-weight:500;
+  }
+  .cert-slide-sub{
+    margin-top:4px;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.35;
+  }
+  .cert-slide-meta{
+    margin-top:8px;
+    font-size:12px;
+    letter-spacing:0.02em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+  .cert-slide-desc{
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--ink-soft);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cert-carousel{
+      -webkit-mask-image:none;
+      mask-image:none;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .cert-carousel-track{
+      animation:none;
+      padding-bottom:14px;
+    }
+    .cert-slide{ scroll-snap-align:start; }
+  }
 
   /* ============ SERVICES — expandable accordion ============ */
   .services-accordion{
@@ -835,13 +950,13 @@
     }
     .hero-inner{
       padding:
-        110px
+        clamp(84px, 11svh, 104px)
         clamp(28px, 7vw, 56px)
         100px;
       max-width:100%;
     }
     .hero-img{
-      object-position:72% center;
+      object-position:76% 17%;
     }
     .hero-field, .hero-grain{ display:none; }
     .about-grid{ grid-template-columns:1fr; gap:44px; }
@@ -856,9 +971,6 @@
     .hero-inner{
       padding-inline: clamp(24px, 6vw, 32px);
     }
-    .hero-img{
-      object-position:74% center;
-    }
     .scroll-cue{ left: clamp(24px, 6vw, 32px); }
     section{ padding:80px 0; }
     .gallery-grid{ grid-template-columns:1fr 1fr; }
@@ -869,7 +981,6 @@
     .social-pill{ padding:10px 8px; font-size:11.5px; gap:5px; }
     .social-pill svg{ width:14px; height:14px; }
     .testimonials-grid{ grid-template-columns:1fr; }
-    .hero{ padding-top:120px; }
   }
 </style>
 </head>
@@ -889,7 +1000,7 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="top">
-    <div class="hero-media" data-hero-parallax id="hero-media" hidden>
+    <div class="hero-media" id="hero-media" hidden>
       <img src="" alt="Vanessa Pacheco Studio — maquillaje profesional" class="hero-img" id="hero-img">
       <div class="hero-media-overlay"></div>
     </div>
@@ -918,6 +1029,18 @@
           Agenda por WhatsApp
         </a>
         <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+      </div>
+
+      <div class="hero-social" data-reveal style="--delay:.32s" aria-label="Redes sociales">
+        <a href="#" class="hero-social-btn" id="hero-social-instagram" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+        <a href="#" class="hero-social-btn" id="hero-social-facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 8.5h2V5h-2c-2.2 0-4 1.8-4 4v2H9v3.5h2V21h3.5v-6.5H17l.5-3.5h-3V9c0-.5.5-1 .5-1Z" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#" class="hero-social-btn" id="hero-social-tiktok" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07Z"/></svg>
+        </a>
       </div>
 
       <div class="hero-meta" data-reveal style="--delay:.35s">
@@ -953,29 +1076,21 @@
 
           <div class="about-copy">
             <div class="kicker" data-reveal>La artista</div>
-            <p class="lede" data-reveal style="--delay:.05s">Formación certificada, aplicada con calma y precisión — no solo maquillaje, sino un diagnóstico real de tu cabello y tu piel antes de cualquier tratamiento.</p>
-            <p class="body-p" data-reveal style="--delay:.1s">Vanessa Pacheco Handal dirige el estudio con certificación profesional en maquillaje y una especialización en nanoterapias capilares, combinando ambas disciplinas para que el resultado dure más allá del día de la cita.</p>
+            <p class="lede" data-reveal style="--delay:.05s">Maquillista y cosmetóloga certificada: trabaja con calma, te explica cada paso y revisa tu cabello y tu piel antes de sugerir un tratamiento o un look.</p>
+            <p class="body-p" data-reveal style="--delay:.1s">Se formó con Pivot Point y TOTAL IMAGE en Honduras y con el masterclass de Samer Khouzami en Miami. En el estudio ofrece maquillaje profesional, nanoterapias capilares y diagnóstico personalizado.</p>
+          </div>
+        </div>
 
-            <div class="cert-list" data-reveal style="--delay:.15s">
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.2 4.7L19 9l-3.5 3.4.8 4.9L12 15l-4.3 2.3.8-4.9L5 9l4.8-1.3L12 3Z" stroke-linejoin="round"/></svg>
-                </div>
-                <div class="cert-text"><b>Maquillista profesional certificada</b><span>Técnica de maquillaje formal, aplicada a piel y ocasión.</span></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg>
-                </div>
-                <div class="cert-text"><b>Certificada en nanoterapias</b><span>Tratamientos capilares de precisión con equipo especializado.</span></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>
-                </div>
-                <div class="cert-text"><b>Diagnóstico capilar personalizado</b><span>Cada tratamiento parte de un análisis real de tu cabello.</span></div>
-              </div>
+        <div class="cert-showcase" data-reveal style="--delay:.18s">
+          <div class="cert-showcase-head">
+            <div>
+              <div class="kicker" style="margin-bottom:12px;">Formación acreditada</div>
+              <h3>Certificaciones profesionales</h3>
             </div>
+            <p>Formación documentada en cosmetología, diseño capilar y maquillaje profesional. Pasa el cursor o toca para pausar el carrusel.</p>
+          </div>
+          <div class="cert-carousel" aria-label="Certificaciones de Vanessa Pacheco Handal" tabindex="0">
+            <div class="cert-carousel-track" id="cert-carousel-track"></div>
           </div>
         </div>
       </div>
@@ -1138,6 +1253,62 @@ const CONFIG = {
     facebook: "https://www.facebook.com/VanessaPachecoMakeup/",
     tiktok: "https://www.tiktok.com/@vanessapachecostudio",
   },
+  certifications: [
+    {
+      title: "Cosmetology Fundamentals",
+      subtitle: "A Designer's Approach to Career Success",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificate of Achievement otorgado a Vanessa Pacheco por completar los fundamentos profesionales de cosmetología con enfoque de diseño y carrera.",
+      image: "images/certifications/cosmetology-fundamentals.jpg",
+    },
+    {
+      title: "Texture",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Formación certificada en textura capilar dentro del programa de diseño profesional Pivot Point.",
+      image: "images/certifications/texture-designers-approach.jpg",
+    },
+    {
+      title: "Hair Design",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificación en diseño de corte y peinado con metodología de diseño aplicada al cabello.",
+      image: "images/certifications/hair-design-designers-approach.jpg",
+    },
+    {
+      title: "Color",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Estudios certificados en teoría y aplicación del color capilar con criterio de diseño.",
+      image: "images/certifications/color-designers-approach.jpg",
+    },
+    {
+      title: "Sculpture",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificación en esculpido y volumen capilar como parte de la formación avanzada en diseño.",
+      image: "images/certifications/sculpture-designers-approach.jpg",
+    },
+    {
+      title: "Make It Real Master Class",
+      subtitle: "Certificate of Attendance",
+      issuer: "Samer Khouzami Beauty Institute",
+      date: "16 octubre 2016",
+      location: "Miami",
+      desc: "Masterclass de maquillaje profesional conducido por Samer Khouzami, completado por Vanessa Pacheco.",
+      image: "images/certifications/samer-khouzami-make-it-real.jpg",
+    },
+  ],
   testimonials: [
     {
       text: "Vanessa entendió exactamente el look que buscaba para mi boda. El maquillaje duró toda la noche sin un solo retoque.",
@@ -1275,9 +1446,18 @@ const CONFIG = {
     const el = document.getElementById(id);
     if(el) el.href = waLink();
   });
-  document.getElementById("social-instagram").href = CONFIG.socials.instagram;
-  document.getElementById("social-facebook").href = CONFIG.socials.facebook;
-  document.getElementById("social-tiktok").href = CONFIG.socials.tiktok;
+  ["social-instagram", "hero-social-instagram"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = CONFIG.socials.instagram;
+  });
+  ["social-facebook", "hero-social-facebook"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = CONFIG.socials.facebook;
+  });
+  ["social-tiktok", "hero-social-tiktok"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = CONFIG.socials.tiktok;
+  });
 
   // Logo + favicon
   const navLogo = document.getElementById("nav-logo");
@@ -1294,6 +1474,26 @@ const CONFIG = {
     navLogo.src = CONFIG.images.logo;
     navLogo.style.display = "block";
     navBrand.classList.add("has-logo");
+  }
+
+  // Certifications carousel (duplicate slides for seamless CSS loop)
+  const certTrack = document.getElementById("cert-carousel-track");
+  if(certTrack && CONFIG.certifications?.length){
+    const certSlide = (c)=>`
+      <article class="cert-slide">
+        <div class="cert-slide-media">
+          <img src="${c.image}" alt="Certificado: ${c.title}" loading="lazy" decoding="async" width="600" height="450">
+        </div>
+        <div class="cert-slide-body">
+          <h4 class="cert-slide-title">${c.title}</h4>
+          ${c.subtitle ? `<p class="cert-slide-sub">${c.subtitle}</p>` : ""}
+          <p class="cert-slide-meta">${c.issuer} · ${c.date}${c.location ? ` · ${c.location}` : ""}</p>
+          <p class="cert-slide-desc">${c.desc}</p>
+        </div>
+      </article>
+    `;
+    const slides = CONFIG.certifications.map(certSlide).join("");
+    certTrack.innerHTML = slides + slides;
   }
 
   // Portrait
@@ -1567,19 +1767,11 @@ if(!reduced){
     tiltScroll:  isCoarse ? 12 : 10,
     heroDrift:   isCoarse ? 0.14 : 0.18,
     heroImgX:    isCoarse ? 0 : 8,
-    heroScroll:  isCoarse ? 0.28 : 0.22,
-    heroTouch:   isCoarse ? 10 : 14,
-    portraitScroll:isCoarse ? 24 : 36,
-    portraitTouch: isCoarse ? 8 : 12,
-    portraitScale: isCoarse ? 0.05 : 0.07,
   };
 
   const blobs = document.querySelectorAll('[data-parallax]');
   const tiles = document.querySelectorAll('[data-parallax-tile]');
   const heroInner = document.querySelector('.hero-inner');
-  const heroImg = document.querySelector('.hero-img');
-  const portraitPhoto = document.querySelector('.about-card-photo');
-  const portraitCard = document.querySelector('.about-card');
   const vh = () => window.innerHeight;
 
   let ptrX = 0, ptrY = 0, ptrOn = false;
@@ -1672,28 +1864,8 @@ if(!reduced){
       }
     }
 
-    if(heroImg){
-      const scrollY = y * MOTION.heroScroll;
-      const strength = MOTION.heroTouch;
-      const mx = isCoarse ? 0 : ((canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6);
-      const my = (canHover || ptrOn) ? ptrY * strength : (isCoarse && ptrOn ? ptrY * strength * 0.85 : ptrY * strength * 0.5);
-      const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.05 : 0.04);
-      heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
-    }
-
-    if(portraitPhoto && portraitCard){
-      const rect = portraitCard.getBoundingClientRect();
-      const inView = rect.top < viewH && rect.bottom > 0;
-      if(inView){
-        const center = rect.top + rect.height/2 - viewH/2;
-        const progress = center / viewH;
-        const scrollOff = progress * -MOTION.portraitScroll;
-        const touchY = ptrOn ? ptrY * MOTION.portraitTouch : 0;
-        const touchX = isCoarse ? 0 : (ptrOn ? ptrX * MOTION.portraitTouch * 0.6 : 0);
-        const scale = 1.12 + Math.min(Math.abs(progress), 1) * MOTION.portraitScale;
-        portraitPhoto.style.transform = `scale(${scale}) translate3d(${touchX}px, ${scrollOff + touchY}px, 0)`;
-      }
-    }
+    /* Hero + artist portraits stay fixed — scroll/pointer parallax on photos
+       caused subpixel shimmer with 60fps background repaints. */
 
     tiles.forEach((t,i)=>{
       const rect = t.getBoundingClientRect();
