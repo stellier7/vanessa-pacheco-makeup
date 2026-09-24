@@ -390,8 +390,7 @@
     inset:-14%;
     z-index:0;
     background-size:cover;
-    background-position:center;
-    will-change:transform;
+    background-position:center 32%;
     transform:translateZ(0) scale(1.12);
     backface-visibility:hidden;
   }
@@ -1535,16 +1534,11 @@ if(!reduced){
     tiltScroll:  isCoarse ? 12 : 10,
     heroDrift:   isCoarse ? 0.14 : 0.18,
     heroImgX:    isCoarse ? 0 : 8,
-    portraitScroll:isCoarse ? 24 : 36,
-    portraitTouch: isCoarse ? 8 : 12,
-    portraitScale: isCoarse ? 0.05 : 0.07,
   };
 
   const blobs = document.querySelectorAll('[data-parallax]');
   const tiles = document.querySelectorAll('[data-parallax-tile]');
   const heroInner = document.querySelector('.hero-inner');
-  const portraitPhoto = document.querySelector('.about-card-photo');
-  const portraitCard = document.querySelector('.about-card');
   const vh = () => window.innerHeight;
 
   let ptrX = 0, ptrY = 0, ptrOn = false;
@@ -1637,22 +1631,8 @@ if(!reduced){
       }
     }
 
-    /* Hero photo stays fixed — scroll/pointer parallax on the image caused
-       subpixel shimmer (CSS filter + 60fps transform updates). */
-
-    if(portraitPhoto && portraitCard){
-      const rect = portraitCard.getBoundingClientRect();
-      const inView = rect.top < viewH && rect.bottom > 0;
-      if(inView){
-        const center = rect.top + rect.height/2 - viewH/2;
-        const progress = center / viewH;
-        const scrollOff = progress * -MOTION.portraitScroll;
-        const touchY = ptrOn ? ptrY * MOTION.portraitTouch : 0;
-        const touchX = isCoarse ? 0 : (ptrOn ? ptrX * MOTION.portraitTouch * 0.6 : 0);
-        const scale = 1.12 + Math.min(Math.abs(progress), 1) * MOTION.portraitScale;
-        portraitPhoto.style.transform = `scale(${scale}) translate3d(${touchX}px, ${scrollOff + touchY}px, 0)`;
-      }
-    }
+    /* Hero + artist portraits stay fixed — scroll/pointer parallax on photos
+       caused subpixel shimmer with 60fps background repaints. */
 
     tiles.forEach((t,i)=>{
       const rect = t.getBoundingClientRect();
