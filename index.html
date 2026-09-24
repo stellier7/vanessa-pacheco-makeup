@@ -819,13 +819,13 @@
     }
     .hero-inner{
       padding:
-        110px
+        clamp(84px, 11svh, 104px)
         clamp(28px, 7vw, 56px)
         100px;
       max-width:100%;
     }
     .hero-img{
-      object-position:72% center;
+      object-position:76% 17%;
     }
     .hero-field, .hero-grain{ display:none; }
     .about-grid{ grid-template-columns:1fr; gap:44px; }
@@ -841,9 +841,6 @@
     .hero-inner{
       padding-inline: clamp(24px, 6vw, 32px);
     }
-    .hero-img{
-      object-position:76% 31%;
-    }
     .scroll-cue{ left: clamp(24px, 6vw, 32px); }
     section{ padding:80px 0; }
     .services-grid{ grid-template-columns:1fr; }
@@ -855,7 +852,6 @@
     .social-pill{ padding:10px 8px; font-size:11.5px; gap:5px; }
     .social-pill svg{ width:14px; height:14px; }
     .testimonials-grid{ grid-template-columns:1fr; }
-    .hero{ padding-top:120px; }
   }
 </style>
 </head>
