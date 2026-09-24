@@ -390,7 +390,7 @@
     inset:-14%;
     z-index:0;
     background-size:cover;
-    background-position:center 32%;
+    background-position:center;
     transform:translateZ(0) scale(1.12);
     backface-visibility:hidden;
   }
@@ -414,23 +414,114 @@
   .about-copy .lede{ font-family:'Fraunces', serif; font-size:23px; line-height:1.4; color:var(--ink); }
   .about-copy .body-p{ color:var(--ink-soft); font-size:16px; }
 
-  .cert-list{ margin-top:32px; display:flex; flex-direction:column; gap:14px; }
-  .cert-item{
-    display:flex; gap:14px; align-items:flex-start;
-    padding:16px 18px; border:1px solid var(--line); border-radius:16px;
-    background:transparent;
-    transition:transform .35s var(--ease), border-color .35s var(--ease), background .35s var(--ease);
+  .cert-showcase{
+    margin-top:clamp(48px,6vw,72px);
+    padding-top:clamp(32px,4vw,40px);
+    border-top:1px solid var(--line);
   }
-  .cert-item:hover{ transform:translateX(8px); border-color:var(--line-strong); background:var(--accent-hover); }
-  .cert-icon{
-    flex:none; width:38px; height:38px; border-radius:50%;
-    background:transparent; border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--ink);
+  .cert-showcase-head{
+    display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+    gap:16px 24px;
+    margin-bottom:28px;
   }
-  .cert-icon svg{ width:18px; height:18px; }
-  .cert-text b{ font-family:'Fraunces', serif; font-weight:500; display:block; margin-bottom:2px; }
-  .cert-text span{ color:var(--ink-soft); font-size:14.5px; }
+  .cert-showcase-head h3{
+    font-family:'Fraunces', serif;
+    font-size:clamp(24px,3vw,32px);
+    line-height:1.15;
+  }
+  .cert-showcase-head p{
+    max-width:52ch;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+  .cert-carousel{
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .cert-carousel-track{
+    display:flex;
+    gap:18px;
+    width:max-content;
+    padding:22px 18px;
+    animation:cert-scroll 55s linear infinite;
+  }
+  .cert-carousel:hover .cert-carousel-track,
+  .cert-carousel:focus-within .cert-carousel-track{
+    animation-play-state:paused;
+  }
+  @keyframes cert-scroll{
+    to{ transform:translate3d(-50%, 0, 0); }
+  }
+  .cert-slide{
+    flex:none;
+    width:min(300px, 78vw);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:14px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    background:var(--cream-2);
+  }
+  .cert-slide-media{
+    border-radius:12px;
+    overflow:hidden;
+    aspect-ratio:4/3;
+    background:#111;
+    border:1px solid var(--line);
+  }
+  .cert-slide-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+  }
+  .cert-slide-title{
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    line-height:1.25;
+    font-weight:500;
+  }
+  .cert-slide-sub{
+    margin-top:4px;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.35;
+  }
+  .cert-slide-meta{
+    margin-top:8px;
+    font-size:12px;
+    letter-spacing:0.02em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+  .cert-slide-desc{
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--ink-soft);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cert-carousel{
+      -webkit-mask-image:none;
+      mask-image:none;
+      overflow-x:auto;
+      overflow-y:hidden;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .cert-carousel-track{
+      animation:none;
+      will-change:auto;
+      padding-bottom:14px;
+    }
+    .cert-slide{ scroll-snap-align:start; }
+  }
 
   /* ============ SERVICES — apple-style 3D cards ============ */
   .services-grid{
@@ -947,28 +1038,20 @@
           <div class="about-copy">
             <div class="kicker" data-reveal>La artista</div>
             <p class="lede" data-reveal style="--delay:.05s">Formación certificada, aplicada con calma y precisión — no solo maquillaje, sino un diagnóstico real de tu cabello y tu piel antes de cualquier tratamiento.</p>
-            <p class="body-p" data-reveal style="--delay:.1s">Vanessa Pacheco Handal dirige el estudio con certificación profesional en maquillaje y una especialización en nanoterapias capilares, combinando ambas disciplinas para que el resultado dure más allá del día de la cita.</p>
+            <p class="body-p" data-reveal style="--delay:.1s">Vanessa Pacheco Handal completó la serie <em>A Designer's Approach</em> con International School of Design TOTAL IMAGE y Pivot Point Academy en Honduras, y el masterclass <em>Make It Real</em> con Samer Khouzami en Miami. En el estudio combina esa base con nanoterapias capilares y diagnóstico personalizado.</p>
+          </div>
+        </div>
 
-            <div class="cert-list" data-reveal style="--delay:.15s">
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.2 4.7L19 9l-3.5 3.4.8 4.9L12 15l-4.3 2.3.8-4.9L5 9l4.8-1.3L12 3Z" stroke-linejoin="round"/></svg>
-                </div>
-                <div class="cert-text"><b>Maquillista profesional certificada</b><span>Técnica de maquillaje formal, aplicada a piel y ocasión.</span></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c4-3.2 7-6.6 7-10.5A7 7 0 0 0 5 10.5C5 14.4 8 17.8 12 21Z"/><circle cx="12" cy="10.5" r="2.3"/></svg>
-                </div>
-                <div class="cert-text"><b>Certificada en nanoterapias</b><span>Tratamientos capilares de precisión con equipo especializado.</span></div>
-              </div>
-              <div class="cert-item">
-                <div class="cert-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 3a8 8 0 1 0 5.29 14.02l3.35 3.35 1.4-1.4-3.35-3.35A8 8 0 0 0 11 3Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>
-                </div>
-                <div class="cert-text"><b>Diagnóstico capilar personalizado</b><span>Cada tratamiento parte de un análisis real de tu cabello.</span></div>
-              </div>
+        <div class="cert-showcase" data-reveal style="--delay:.18s">
+          <div class="cert-showcase-head">
+            <div>
+              <div class="kicker" style="margin-bottom:12px;">Formación acreditada</div>
+              <h3>Certificaciones profesionales</h3>
             </div>
+            <p>Formación documentada en cosmetología, diseño capilar y maquillaje profesional. Pasa el cursor o toca para pausar el carrusel.</p>
+          </div>
+          <div class="cert-carousel" aria-label="Certificaciones de Vanessa Pacheco Handal" tabindex="0">
+            <div class="cert-carousel-track" id="cert-carousel-track"></div>
           </div>
         </div>
       </div>
@@ -1132,6 +1215,62 @@ const CONFIG = {
     facebook: "https://www.facebook.com/VanessaPachecoMakeup/",
     tiktok: "https://www.tiktok.com/@vanessapachecostudio",
   },
+  certifications: [
+    {
+      title: "Cosmetology Fundamentals",
+      subtitle: "A Designer's Approach to Career Success",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificate of Achievement otorgado a Vanessa Pacheco por completar los fundamentos profesionales de cosmetología con enfoque de diseño y carrera.",
+      image: "images/certifications/cosmetology-fundamentals.jpg",
+    },
+    {
+      title: "Texture",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Formación certificada en textura capilar dentro del programa de diseño profesional Pivot Point.",
+      image: "images/certifications/texture-designers-approach.jpg",
+    },
+    {
+      title: "Hair Design",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificación en diseño de corte y peinado con metodología de diseño aplicada al cabello.",
+      image: "images/certifications/hair-design-designers-approach.jpg",
+    },
+    {
+      title: "Color",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Estudios certificados en teoría y aplicación del color capilar con criterio de diseño.",
+      image: "images/certifications/color-designers-approach.jpg",
+    },
+    {
+      title: "Sculpture",
+      subtitle: "A Designer's Approach",
+      issuer: "International School of Design TOTAL IMAGE · Pivot Point Academy",
+      date: "Septiembre 2014",
+      location: "Honduras",
+      desc: "Certificación en esculpido y volumen capilar como parte de la formación avanzada en diseño.",
+      image: "images/certifications/sculpture-designers-approach.jpg",
+    },
+    {
+      title: "Make It Real Master Class",
+      subtitle: "Certificate of Attendance",
+      issuer: "Samer Khouzami Beauty Institute",
+      date: "16 octubre 2016",
+      location: "Miami",
+      desc: "Masterclass de maquillaje profesional conducido por Samer Khouzami, completado por Vanessa Pacheco.",
+      image: "images/certifications/samer-khouzami-make-it-real.jpg",
+    },
+  ],
   testimonials: [
     {
       text: "Vanessa entendió exactamente el look que buscaba para mi boda. El maquillaje duró toda la noche sin un solo retoque.",
@@ -1279,6 +1418,26 @@ const CONFIG = {
     navLogo.src = CONFIG.images.logo;
     navLogo.style.display = "block";
     navBrand.classList.add("has-logo");
+  }
+
+  // Certifications carousel (duplicate slides for seamless CSS loop)
+  const certTrack = document.getElementById("cert-carousel-track");
+  if(certTrack && CONFIG.certifications?.length){
+    const certSlide = (c)=>`
+      <article class="cert-slide">
+        <div class="cert-slide-media">
+          <img src="${c.image}" alt="Certificado: ${c.title}" loading="lazy" decoding="async" width="600" height="450">
+        </div>
+        <div class="cert-slide-body">
+          <h4 class="cert-slide-title">${c.title}</h4>
+          ${c.subtitle ? `<p class="cert-slide-sub">${c.subtitle}</p>` : ""}
+          <p class="cert-slide-meta">${c.issuer} · ${c.date}${c.location ? ` · ${c.location}` : ""}</p>
+          <p class="cert-slide-desc">${c.desc}</p>
+        </div>
+      </article>
+    `;
+    const slides = CONFIG.certifications.map(certSlide).join("");
+    certTrack.innerHTML = slides + slides;
   }
 
   // Portrait
