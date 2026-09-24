@@ -182,16 +182,16 @@
     z-index:0;
     overflow:hidden;
     pointer-events:none;
+    transform:translateZ(0);
+    backface-visibility:hidden;
   }
   .hero-img{
     width:100%;
-    height:115%;
+    height:100%;
     object-fit:cover;
     object-position:82% center;
-    will-change:transform;
-    transform:translateZ(0) scale(1.04);
+    transform:translateZ(0) scale(1.045);
     backface-visibility:hidden;
-    filter:grayscale(100%) contrast(1.12) brightness(0.5);
     opacity:0.95;
   }
   .hero-media-overlay{
@@ -875,7 +875,7 @@
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="top">
-    <div class="hero-media" data-hero-parallax id="hero-media" hidden>
+    <div class="hero-media" id="hero-media" hidden>
       <img src="" alt="Vanessa Pacheco Studio — maquillaje profesional" class="hero-img" id="hero-img">
       <div class="hero-media-overlay"></div>
     </div>
@@ -1539,8 +1539,6 @@ if(!reduced){
     tiltScroll:  isCoarse ? 12 : 10,
     heroDrift:   isCoarse ? 0.14 : 0.18,
     heroImgX:    isCoarse ? 0 : 8,
-    heroScroll:  isCoarse ? 0.28 : 0.22,
-    heroTouch:   isCoarse ? 10 : 14,
     portraitScroll:isCoarse ? 24 : 36,
     portraitTouch: isCoarse ? 8 : 12,
     portraitScale: isCoarse ? 0.05 : 0.07,
@@ -1549,7 +1547,6 @@ if(!reduced){
   const blobs = document.querySelectorAll('[data-parallax]');
   const tiles = document.querySelectorAll('[data-parallax-tile]');
   const heroInner = document.querySelector('.hero-inner');
-  const heroImg = document.querySelector('.hero-img');
   const portraitPhoto = document.querySelector('.about-card-photo');
   const portraitCard = document.querySelector('.about-card');
   const vh = () => window.innerHeight;
@@ -1644,14 +1641,8 @@ if(!reduced){
       }
     }
 
-    if(heroImg){
-      const scrollY = y * MOTION.heroScroll;
-      const strength = MOTION.heroTouch;
-      const mx = isCoarse ? 0 : ((canHover || ptrOn) ? ptrX * strength : ptrX * strength * 0.6);
-      const my = (canHover || ptrOn) ? ptrY * strength : (isCoarse && ptrOn ? ptrY * strength * 0.85 : ptrY * strength * 0.5);
-      const scale = 1.04 + Math.min(y / viewH, 1) * (isCoarse ? 0.05 : 0.04);
-      heroImg.style.transform = `scale(${scale}) translate3d(${mx}px, ${scrollY + my}px, 0)`;
-    }
+    /* Hero photo stays fixed — scroll/pointer parallax on the image caused
+       subpixel shimmer (CSS filter + 60fps transform updates). */
 
     if(portraitPhoto && portraitCard){
       const rect = portraitCard.getBoundingClientRect();
