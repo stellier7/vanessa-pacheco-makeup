@@ -484,12 +484,6 @@
     line-height:1.25;
     font-weight:500;
   }
-  .cert-slide-sub{
-    margin-top:2px;
-    font-size:12px;
-    color:var(--ink-faint);
-    line-height:1.35;
-  }
   @media (prefers-reduced-motion: reduce){
     .cert-carousel{
       scroll-snap-type:x mandatory;
@@ -1463,7 +1457,6 @@ const CONFIG = {
         </div>
         <div class="cert-slide-body">
           <h4 class="cert-slide-title">${c.title}</h4>
-          ${c.subtitle ? `<p class="cert-slide-sub">${c.subtitle}</p>` : ""}
         </div>
       </article>
     `;
@@ -1471,9 +1464,12 @@ const CONFIG = {
     certTrack.innerHTML = slides + slides;
 
     const certReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const CERT_LOOP_SECONDS = 35;
-    let certPaused = certReduced;
+    const CERT_LOOP_SECONDS = 32;
+    const CERT_DRAG_THRESHOLD = 8;
+    let certPaused = false;
     let certPauseTimer = 0;
+    let certInView = false;
+    let certPointerDown = false;
     let certDragging = false;
     let certDragX = 0;
     let certDragScroll = 0;
@@ -1483,30 +1479,29 @@ const CONFIG = {
     const certWrapScroll = ()=>{
       const half = certHalfWidth();
       if(half <= 0) return;
-      if(certViewport.scrollLeft >= half) certViewport.scrollLeft -= half;
+      if(certViewport.scrollLeft >= half - 1) certViewport.scrollLeft -= half;
       else if(certViewport.scrollLeft < 0) certViewport.scrollLeft += half;
     };
 
-    const certPauseAuto = (ms = 2000)=>{
+    const certPauseAuto = (ms = 2200)=>{
       certPaused = true;
       clearTimeout(certPauseTimer);
-      certPauseTimer = setTimeout(()=>{ certPaused = certReduced; }, ms);
+      certPauseTimer = setTimeout(()=>{ certPaused = false; }, ms);
     };
 
+    const certIO = new IntersectionObserver((entries)=>{
+      certInView = entries.some((e)=> e.isIntersecting);
+    }, { threshold: 0.15 });
+    certIO.observe(certViewport);
+
     if(!certReduced){
-      let certLast = performance.now();
-      (function certTick(now){
-        const dt = Math.min(now - certLast, 48);
-        certLast = now;
-        if(!certPaused && !certDragging){
-          const half = certHalfWidth();
-          if(half > 0){
-            certViewport.scrollLeft += (half / (CERT_LOOP_SECONDS * 1000)) * dt;
-            certWrapScroll();
-          }
-        }
-        requestAnimationFrame(certTick);
-      })(certLast);
+      window.setInterval(()=>{
+        if(certPaused || certDragging || !certInView) return;
+        const half = certHalfWidth();
+        if(half <= 0) return;
+        certViewport.scrollLeft += half / (CERT_LOOP_SECONDS * (1000 / 50));
+        certWrapScroll();
+      }, 50);
     }
 
     certViewport.addEventListener("wheel", (e)=>{
@@ -1515,35 +1510,45 @@ const CONFIG = {
 
     certViewport.addEventListener("pointerdown", (e)=>{
       if(e.pointerType === "mouse" && e.button !== 0) return;
-      certDragging = true;
+      certPointerDown = true;
+      certDragging = false;
       certDragX = e.clientX;
       certDragScroll = certViewport.scrollLeft;
-      certPaused = true;
-      certViewport.classList.add("is-dragging");
-      certViewport.setPointerCapture(e.pointerId);
     });
 
     certViewport.addEventListener("pointermove", (e)=>{
-      if(!certDragging) return;
-      certViewport.scrollLeft = certDragScroll - (e.clientX - certDragX);
+      if(!certPointerDown) return;
+      const dx = e.clientX - certDragX;
+      if(!certDragging){
+        if(Math.abs(dx) < CERT_DRAG_THRESHOLD) return;
+        certDragging = true;
+        certPaused = true;
+        certViewport.classList.add("is-dragging");
+        certViewport.setPointerCapture(e.pointerId);
+      }
+      certViewport.scrollLeft = certDragScroll - dx;
       certWrapScroll();
     });
 
-    const certEndDrag = (e)=>{
-      if(!certDragging) return;
-      certDragging = false;
-      certViewport.classList.remove("is-dragging");
-      try{ certViewport.releasePointerCapture(e.pointerId); }catch{ /* noop */ }
-      certPauseAuto();
+    const certEndPointer = (e)=>{
+      if(!certPointerDown) return;
+      certPointerDown = false;
+      if(certDragging){
+        certDragging = false;
+        certViewport.classList.remove("is-dragging");
+        try{ certViewport.releasePointerCapture(e.pointerId); }catch{ /* noop */ }
+        certPauseAuto();
+      }
     };
-    certViewport.addEventListener("pointerup", certEndDrag);
-    certViewport.addEventListener("pointercancel", certEndDrag);
+    certViewport.addEventListener("pointerup", certEndPointer);
+    certViewport.addEventListener("pointercancel", certEndPointer);
+    certViewport.addEventListener("pointerleave", (e)=>{
+      if(certDragging) certEndPointer(e);
+    });
 
     certViewport.addEventListener("scroll", ()=>{
       if(!certDragging) certWrapScroll();
     }, { passive:true });
-
-    certViewport.addEventListener("touchstart", ()=> certPauseAuto(2500), { passive:true });
   }
 
   // Portrait
