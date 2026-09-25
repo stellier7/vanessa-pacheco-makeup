@@ -415,65 +415,62 @@
   .about-copy .body-p{ color:var(--ink-soft); font-size:16px; }
 
   .cert-showcase{
-    margin-top:clamp(48px,6vw,72px);
-    padding-top:clamp(32px,4vw,40px);
+    margin-top:clamp(36px,5vw,52px);
+    padding-top:clamp(24px,3vw,32px);
     border-top:1px solid var(--line);
   }
   .cert-showcase-head{
-    display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
-    gap:16px 24px;
-    margin-bottom:28px;
+    margin-bottom:18px;
+    max-width:48ch;
   }
-  .cert-showcase-head h3{
-    font-family:'Fraunces', serif;
-    font-size:clamp(24px,3vw,32px);
-    line-height:1.15;
-  }
-  .cert-showcase-head p{
-    max-width:52ch;
+  .cert-showcase-head .kicker{ margin-bottom:10px; }
+  .cert-showcase-intro{
     color:var(--ink-soft);
-    font-size:15px;
+    font-size:14.5px;
+    line-height:1.5;
   }
   .cert-carousel{
     position:relative;
-    overflow:hidden;
-    border-radius:20px;
-    border:1px solid var(--line);
-    background:rgba(255,255,255,0.02);
-    -webkit-mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    mask-image:linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:auto;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.015);
+    cursor:grab;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,0.22) transparent;
+  }
+  .cert-carousel.is-dragging{ cursor:grabbing; }
+  .cert-carousel::-webkit-scrollbar{ height:6px; }
+  .cert-carousel::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,0.18);
+    border-radius:999px;
   }
   .cert-carousel-track{
     display:flex;
-    gap:18px;
+    gap:14px;
     width:max-content;
-    padding:22px 18px;
-    animation:cert-scroll 55s linear infinite;
-  }
-  .cert-carousel:hover .cert-carousel-track,
-  .cert-carousel:focus-within .cert-carousel-track{
-    animation-play-state:paused;
-  }
-  @keyframes cert-scroll{
-    to{ transform:translate3d(-50%, 0, 0); }
+    padding:14px 16px 16px;
   }
   .cert-slide{
     flex:none;
-    width:min(300px, 78vw);
+    width:min(252px, 72vw);
     display:flex;
     flex-direction:column;
-    gap:14px;
-    padding:14px;
-    border-radius:18px;
-    border:1px solid var(--line);
-    background:var(--cream-2);
+    gap:10px;
+    padding:10px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.02);
   }
   .cert-slide-media{
-    border-radius:12px;
+    border-radius:10px;
     overflow:hidden;
-    aspect-ratio:4/3;
-    background:#111;
-    border:1px solid var(--line);
+    aspect-ratio:3/2;
+    background:#0a0a0a;
+    border:1px solid rgba(255,255,255,0.06);
   }
   .cert-slide-media img{
     width:100%;
@@ -483,41 +480,19 @@
   }
   .cert-slide-title{
     font-family:'Fraunces', serif;
-    font-size:17px;
+    font-size:15px;
     line-height:1.25;
     font-weight:500;
   }
   .cert-slide-sub{
-    margin-top:4px;
-    font-size:13px;
-    color:var(--ink-soft);
-    line-height:1.35;
-  }
-  .cert-slide-meta{
-    margin-top:8px;
+    margin-top:2px;
     font-size:12px;
-    letter-spacing:0.02em;
     color:var(--ink-faint);
-    text-transform:uppercase;
-  }
-  .cert-slide-desc{
-    margin-top:8px;
-    font-size:14px;
-    line-height:1.5;
-    color:var(--ink-soft);
+    line-height:1.35;
   }
   @media (prefers-reduced-motion: reduce){
     .cert-carousel{
-      -webkit-mask-image:none;
-      mask-image:none;
-      overflow-x:auto;
-      overflow-y:hidden;
       scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-    }
-    .cert-carousel-track{
-      animation:none;
-      padding-bottom:14px;
     }
     .cert-slide{ scroll-snap-align:start; }
   }
@@ -1083,13 +1058,10 @@
 
         <div class="cert-showcase" data-reveal style="--delay:.18s">
           <div class="cert-showcase-head">
-            <div>
-              <div class="kicker" style="margin-bottom:12px;">Formación acreditada</div>
-              <h3>Certificaciones profesionales</h3>
-            </div>
-            <p>Formación documentada en cosmetología, diseño capilar y maquillaje profesional. Pasa el cursor o toca para pausar el carrusel.</p>
+            <div class="kicker">Formación acreditada</div>
+            <p class="cert-showcase-intro">Cosmetología, diseño capilar y maquillaje profesional.</p>
           </div>
-          <div class="cert-carousel" aria-label="Certificaciones de Vanessa Pacheco Handal" tabindex="0">
+          <div class="cert-carousel" id="cert-carousel" aria-label="Certificaciones de Vanessa Pacheco Handal" tabindex="0">
             <div class="cert-carousel-track" id="cert-carousel-track"></div>
           </div>
         </div>
@@ -1476,24 +1448,98 @@ const CONFIG = {
     navBrand.classList.add("has-logo");
   }
 
-  // Certifications carousel (duplicate slides for seamless CSS loop)
+  // Certifications carousel (duplicate slides for seamless scroll loop)
+  const certViewport = document.getElementById("cert-carousel");
   const certTrack = document.getElementById("cert-carousel-track");
-  if(certTrack && CONFIG.certifications?.length){
+  if(certTrack && certViewport && CONFIG.certifications?.length){
     const certSlide = (c)=>`
       <article class="cert-slide">
         <div class="cert-slide-media">
-          <img src="${c.image}" alt="Certificado: ${c.title}" loading="lazy" decoding="async" width="600" height="450">
+          <img src="${c.image}" alt="Certificado: ${c.title}" loading="lazy" decoding="async" width="504" height="336">
         </div>
         <div class="cert-slide-body">
           <h4 class="cert-slide-title">${c.title}</h4>
           ${c.subtitle ? `<p class="cert-slide-sub">${c.subtitle}</p>` : ""}
-          <p class="cert-slide-meta">${c.issuer} · ${c.date}${c.location ? ` · ${c.location}` : ""}</p>
-          <p class="cert-slide-desc">${c.desc}</p>
         </div>
       </article>
     `;
     const slides = CONFIG.certifications.map(certSlide).join("");
     certTrack.innerHTML = slides + slides;
+
+    const certReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const CERT_LOOP_SECONDS = 35;
+    let certPaused = certReduced;
+    let certPauseTimer = 0;
+    let certDragging = false;
+    let certDragX = 0;
+    let certDragScroll = 0;
+
+    const certHalfWidth = ()=> certTrack.scrollWidth / 2;
+
+    const certWrapScroll = ()=>{
+      const half = certHalfWidth();
+      if(half <= 0) return;
+      if(certViewport.scrollLeft >= half) certViewport.scrollLeft -= half;
+      else if(certViewport.scrollLeft < 0) certViewport.scrollLeft += half;
+    };
+
+    const certPauseAuto = (ms = 2000)=>{
+      certPaused = true;
+      clearTimeout(certPauseTimer);
+      certPauseTimer = setTimeout(()=>{ certPaused = certReduced; }, ms);
+    };
+
+    if(!certReduced){
+      let certLast = performance.now();
+      (function certTick(now){
+        const dt = Math.min(now - certLast, 48);
+        certLast = now;
+        if(!certPaused && !certDragging){
+          const half = certHalfWidth();
+          if(half > 0){
+            certViewport.scrollLeft += (half / (CERT_LOOP_SECONDS * 1000)) * dt;
+            certWrapScroll();
+          }
+        }
+        requestAnimationFrame(certTick);
+      })(certLast);
+    }
+
+    certViewport.addEventListener("wheel", (e)=>{
+      if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) certPauseAuto();
+    }, { passive:true });
+
+    certViewport.addEventListener("pointerdown", (e)=>{
+      if(e.pointerType === "mouse" && e.button !== 0) return;
+      certDragging = true;
+      certDragX = e.clientX;
+      certDragScroll = certViewport.scrollLeft;
+      certPaused = true;
+      certViewport.classList.add("is-dragging");
+      certViewport.setPointerCapture(e.pointerId);
+    });
+
+    certViewport.addEventListener("pointermove", (e)=>{
+      if(!certDragging) return;
+      certViewport.scrollLeft = certDragScroll - (e.clientX - certDragX);
+      certWrapScroll();
+    });
+
+    const certEndDrag = (e)=>{
+      if(!certDragging) return;
+      certDragging = false;
+      certViewport.classList.remove("is-dragging");
+      try{ certViewport.releasePointerCapture(e.pointerId); }catch{ /* noop */ }
+      certPauseAuto();
+    };
+    certViewport.addEventListener("pointerup", certEndDrag);
+    certViewport.addEventListener("pointercancel", certEndDrag);
+
+    certViewport.addEventListener("scroll", ()=>{
+      if(!certDragging) certWrapScroll();
+    }, { passive:true });
+
+    certViewport.addEventListener("touchstart", ()=> certPauseAuto(2500), { passive:true });
   }
 
   // Portrait
