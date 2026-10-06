@@ -418,10 +418,14 @@
     margin-top:clamp(36px,5vw,52px);
     padding-top:clamp(24px,3vw,32px);
     border-top:1px solid var(--line);
+    /* Bleed to the about card edges so the strip feels wider */
+    margin-inline:calc(-1 * clamp(36px,6vw,80px));
+    width:calc(100% + 2 * clamp(36px,6vw,80px));
   }
   .cert-showcase-head{
     margin-bottom:18px;
     max-width:48ch;
+    padding-inline:clamp(36px,6vw,80px);
   }
   .cert-showcase-head .kicker{ margin-bottom:10px; }
   .cert-showcase-intro{
@@ -431,46 +435,41 @@
   }
   .cert-carousel{
     position:relative;
-    overflow-x:auto;
-    overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scroll-behavior:auto;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,0.08);
-    background:rgba(255,255,255,0.015);
+    overflow:hidden;
     cursor:grab;
-    scrollbar-width:thin;
-    scrollbar-color:rgba(255,255,255,0.22) transparent;
+    touch-action:pan-y;
+    /* No outer card chrome — slides sit directly on the section */
+    border:none;
+    background:transparent;
+    border-radius:0;
   }
   .cert-carousel.is-dragging{ cursor:grabbing; }
-  .cert-carousel::-webkit-scrollbar{ height:6px; }
-  .cert-carousel::-webkit-scrollbar-thumb{
-    background:rgba(255,255,255,0.18);
-    border-radius:999px;
-  }
   .cert-carousel-track{
     display:flex;
-    gap:14px;
+    gap:clamp(12px,2.5vw,20px);
     width:max-content;
-    padding:14px 16px 16px;
+    padding:4px clamp(36px,6vw,80px) 8px;
+    will-change:transform;
+    transform:translate3d(0,0,0);
+    backface-visibility:hidden;
   }
   .cert-slide{
     flex:none;
-    width:min(252px, 72vw);
+    width:min(340px, 82vw);
     display:flex;
     flex-direction:column;
     gap:10px;
-    padding:10px;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,0.08);
-    background:rgba(255,255,255,0.02);
+    padding:0;
+    border-radius:0;
+    border:none;
+    background:transparent;
   }
   .cert-slide-media{
-    border-radius:10px;
+    border-radius:14px;
     overflow:hidden;
     aspect-ratio:3/2;
     background:#0a0a0a;
-    border:1px solid rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.08);
   }
   .cert-slide-media img{
     width:100%;
@@ -480,13 +479,24 @@
   }
   .cert-slide-title{
     font-family:'Fraunces', serif;
-    font-size:15px;
+    font-size:clamp(15px,2.4vw,17px);
     line-height:1.25;
     font-weight:500;
+    padding-inline:2px;
+  }
+  @media (max-width: 620px){
+    .cert-slide{ width:min(320px, 88vw); }
   }
   @media (prefers-reduced-motion: reduce){
     .cert-carousel{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
       scroll-snap-type:x mandatory;
+      scrollbar-width:thin;
+    }
+    .cert-carousel-track{
+      will-change:auto;
+      transform:none !important;
     }
     .cert-slide{ scroll-snap-align:start; }
   }
@@ -1445,7 +1455,7 @@ const CONFIG = {
     navBrand.classList.add("has-logo");
   }
 
-  // Certifications carousel (duplicate slides for seamless scroll loop)
+  // Certifications carousel — rAF + translate3d for smooth looping
   const certViewport = document.getElementById("cert-carousel");
   const certTrack = document.getElementById("cert-carousel-track");
   if(certTrack && certViewport && CONFIG.certifications?.length){
@@ -1463,26 +1473,31 @@ const CONFIG = {
     certTrack.innerHTML = slides + slides;
 
     const certReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const CERT_LOOP_SECONDS = 32;
+    const CERT_PX_PER_SEC = 42;
     const CERT_DRAG_THRESHOLD = 8;
     let certPaused = false;
     let certPauseTimer = 0;
     let certInView = false;
+    let certOffset = 0;
+    let certHalf = 0;
+    let certLastTs = 0;
     let certPointerDown = false;
     let certDragging = false;
     let certDragX = 0;
-    let certDragScroll = 0;
+    let certDragOrigin = 0;
 
-    const certHalfWidth = ()=> certTrack.scrollWidth / 2;
-
-    const certWrapScroll = ()=>{
-      const half = certHalfWidth();
-      if(half <= 0) return;
-      if(certViewport.scrollLeft >= half - 1) certViewport.scrollLeft -= half;
-      else if(certViewport.scrollLeft < 0) certViewport.scrollLeft += half;
+    const certMeasure = ()=>{
+      certHalf = certTrack.scrollWidth / 2;
     };
 
-    const certPauseAuto = (ms = 2200)=>{
+    const certApply = ()=>{
+      if(certHalf > 0){
+        certOffset = ((certOffset % certHalf) + certHalf) % certHalf;
+      }
+      certTrack.style.transform = `translate3d(${-certOffset}px,0,0)`;
+    };
+
+    const certPauseAuto = (ms = 2400)=>{
       certPaused = true;
       clearTimeout(certPauseTimer);
       certPauseTimer = setTimeout(()=>{ certPaused = false; }, ms);
@@ -1490,33 +1505,48 @@ const CONFIG = {
 
     const certIO = new IntersectionObserver((entries)=>{
       certInView = entries.some((e)=> e.isIntersecting);
-    }, { threshold: 0.15 });
+    }, { threshold: 0.12 });
     certIO.observe(certViewport);
 
+    const certOnResize = ()=>{
+      const prevHalf = certHalf;
+      certMeasure();
+      if(prevHalf > 0 && certHalf > 0){
+        certOffset = certOffset * (certHalf / prevHalf);
+      }
+      certApply();
+    };
+    window.addEventListener("resize", certOnResize, { passive:true });
+    if(document.fonts?.ready){
+      document.fonts.ready.then(()=>{ certMeasure(); certApply(); }).catch(()=>{});
+    }
+    requestAnimationFrame(()=>{ certMeasure(); certApply(); });
+
     if(!certReduced){
-      window.setInterval(()=>{
-        if(certPaused || certDragging || !certInView) return;
-        const half = certHalfWidth();
-        if(half <= 0) return;
-        certViewport.scrollLeft += half / (CERT_LOOP_SECONDS * (1000 / 50));
-        certWrapScroll();
-      }, 50);
+      const certTick = (ts)=>{
+        if(!certLastTs) certLastTs = ts;
+        const dt = Math.min(48, ts - certLastTs) / 1000;
+        certLastTs = ts;
+        if(!certPaused && !certDragging && certInView && certHalf > 0){
+          certOffset += CERT_PX_PER_SEC * dt;
+          certApply();
+        }
+        requestAnimationFrame(certTick);
+      };
+      requestAnimationFrame(certTick);
     }
 
-    certViewport.addEventListener("wheel", (e)=>{
-      if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) certPauseAuto();
-    }, { passive:true });
-
     certViewport.addEventListener("pointerdown", (e)=>{
+      if(certReduced) return;
       if(e.pointerType === "mouse" && e.button !== 0) return;
       certPointerDown = true;
       certDragging = false;
       certDragX = e.clientX;
-      certDragScroll = certViewport.scrollLeft;
+      certDragOrigin = certOffset;
     });
 
     certViewport.addEventListener("pointermove", (e)=>{
-      if(!certPointerDown) return;
+      if(!certPointerDown || certReduced) return;
       const dx = e.clientX - certDragX;
       if(!certDragging){
         if(Math.abs(dx) < CERT_DRAG_THRESHOLD) return;
@@ -1525,8 +1555,8 @@ const CONFIG = {
         certViewport.classList.add("is-dragging");
         certViewport.setPointerCapture(e.pointerId);
       }
-      certViewport.scrollLeft = certDragScroll - dx;
-      certWrapScroll();
+      certOffset = certDragOrigin - dx;
+      certApply();
     });
 
     const certEndPointer = (e)=>{
@@ -1545,9 +1575,10 @@ const CONFIG = {
       if(certDragging) certEndPointer(e);
     });
 
-    certViewport.addEventListener("scroll", ()=>{
-      if(!certDragging) certWrapScroll();
-    }, { passive:true });
+    certViewport.addEventListener("mouseenter", ()=>{ certPaused = true; });
+    certViewport.addEventListener("mouseleave", ()=>{
+      if(!certDragging) certPauseAuto(400);
+    });
   }
 
   // Portrait
